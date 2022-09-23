@@ -1,0 +1,86 @@
+.navbar {
+    background-color: pink;
+    padding: 7px 25px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.navbar ul {
+    list-style-type:none;
+}
+
+.navbar li {
+    display: inline;
+    margin: 0px 15px;
+}
+
+.navbar ul li a{
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#home #foto {
+    width: 150px;
+    height: 100%;
+    border: 1px solid black;
+    padding: 2px;
+    border-radius: 10px;
+}
+
+#home #ig-logo {
+    width: 20px;
+    height: 100%;
+}
+
+#contact{
+    position: relative;
+    left: 25%;
+    margin-top: 20px;
+}
+
+#contact .row {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    border: 1px solid black;
+}
+
+#contact .col{
+    width: 50%;
+    padding: 15px;
+}
+
+#about-me{
+    margin: 10%;
+    height: 80%;
+    background-color: pink;
+}
+
+#about-me .row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#about-me .col{
+    width: 100%;
+    padding: 15px;
+    border: 1px solid black;
+    margin: 10px;
+    background-color: pink;
+}
+
+#about-me h2{
+    text-align: center;
+}
+
+#about-me img{
+    width: 200px;
+    height: auto;
+    float: left;
+    margin-right: 10px;
+}
+
