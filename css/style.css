@@ -1,0 +1,49 @@
+#profil{
+    margin: 5% 5% 0px 5%;
+    padding: 1px 15px;
+    background-color: ghostwhite;
+}
+
+.text-center{
+    text-align: center;
+}
+
+.foto-aing{
+    width: 200px;
+    border-radius: 5%;
+}
+
+.custom-font{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+}
+
+.sosmed-logo img{
+    width: 20px;
+    height: auto;
+}
+
+.row{
+    width: 400px;
+    display: flex;
+    justify-content: start;
+}
+
+.col-1{
+    width: 100%;
+    max-width: 130px;
+}
+
+.col-2{
+    width: 100%;
+    max-width: 7px;
+}
+
+.col-3{
+    width: 100%;
+}
+
+.tentang-saya-bg {
+    background-color: pink;
+    padding: 5px 2px;
+}
