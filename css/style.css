@@ -73,7 +73,13 @@
     height: auto;
 }
 
-.collapsetable{
+.collapse {
     border-collapse: collapse;
     border: 1px solid black;
+}
+
+.caption-custom{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
 }
