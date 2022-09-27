@@ -29,6 +29,13 @@
     justify-content: start;
 }
 
+.row-2{
+    width: 400px;
+    display: flex;
+    justify-content: start;
+    margin-top: -15px;
+}
+
 .col-1{
     width: 100%;
     max-width: 130px;
@@ -46,4 +53,27 @@
 .tentang-saya-bg {
     background-color: pink;
     padding: 5px 2px;
+}
+
+#shopping-list{
+    margin: 5% 5% 0px 5%;
+    padding: 20px 15px;
+    border-radius: 15px;
+    background-color: ghostwhite;
+    display: flex;
+    justify-content: center;
+}
+
+#shopping-list .th-custom, .td-custom {
+    padding: 0.5px 8px;
+}
+
+#shopping-list img{
+    width: 50px;
+    height: auto;
+}
+
+.collapsetable{
+    border-collapse: collapse;
+    border: 1px solid black;
 }
