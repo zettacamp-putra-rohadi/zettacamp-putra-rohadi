@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multimedia & Form</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="/index.html">Profile</a></li>
+            <li><a href="/shopping-list.html">Table</a></li>
+            <li><a href="/multimedia-form.html">Multimedia & Form</a></li>
+        </ul>
+    </nav>
+
+    <section id="multimedia-form" class="custom-font">
+        <div class="row-3">
+            <div class="col-3">
+                <h3>Audio</h3>
+                <audio controls>
+                    <source src="assets/Rich Brian - Dat $tick.mp3" type="audio/mpeg" />
+                </audio>
+            </div>
+            <div class="col-3" style="margin: auto 15px;">
+                <h3>Video</h3>
+                <iframe width="320" height="240" 
+                src="https://www.youtube.com/embed/BGqGNTIE6HQ" 
+                title="Shot on iPhone meme compilation" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen></iframe>
+            </div>
+            <div class="col-3">
+                <h3>PDF</h3>
+                <object data="assets/example.pdf" type="application/pdf" width="400" height="100%">
+                    Browser antum ga support
+                </object>
+            </div>
+        </div>
+        <div style="margin-top:25px ;">
+            <form id="form">
+                <fieldset>
+                <legend>Form</legend>
+                <label>First name:</label><br>
+                <input type="text" name="fname" placeholder="Putra" class="custom-input"><br>
+
+                <label>Last name:</label><br>
+                <input type="text" name="lname" placeholder="Bagas" class="custom-input"><br>
+
+                <label>Biography:</label><br>
+                <textarea rows="4" cols="50" name="biography" placeholder="Tell me your story"></textarea><br>
+                
+                <label>Gender:</label><br>
+                <input type="radio" name="gender" value="Male">
+                <label>Male</label><br>
+                <input type="radio" name="gender" value="Female">
+                <label>Female</label><br>
+
+                <label>Email:</label><br>
+                <input type="email" name="email" placeholder="example@gmail.com" class="custom-input"><br>
+
+                <label>Telephone:</label><br>
+                <input type="tel" name="phone" pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}" placeholder="1234-5678-9012" class="custom-input"><br>
+
+                <label>Age:</label><br>
+                <input type="number" name="age" placeholder="your age" class="custom-input"><br>
+                
+                <label>Url:</label><br>
+                <input list="url-list" type="url" name="url" placeholder="https://www.example.com/" class="custom-input"><br>
+                <datalist id="url-list">
+                    <option value="https://www.instagram.com/">
+                    <option value="https://twitter.com/">
+                    <option value="https://www.linkedin.com/">
+                  </datalist>
+                
+                <label>Password:</label><br>
+                <input type="password" name="password" placeholder="input your password" class="custom-input"><br>
+
+                <label>Gender:</label><br>
+                <input type="checkbox" name="gender2" value="Male">
+                <label>Male</label><br>
+                <input type="checkbox" name="gender2" value="Female">
+                <label>Female</label><br>
+
+                <label>Color:</label><br>
+                <input type="color" name="color" ><br>
+
+                <label>Birthday:</label><br>
+                <input type="date" name="birthday" class="custom-input"><br>
+
+                <label>File:</label><br>
+                <input type="file" name="file" ><br>
+
+                <label>Choose a coffee:</label><br>
+                <select name="cars" class="custom-input">
+                    <option value="volvo">Americano</option>
+                    <option value="saab">Cappuccino</option>
+                    <option value="fiat">Mochaccino</option>
+                </select><br>
+
+                <label>Your Mood (between 0 and 50):</label><br>
+                <input type="range" id="vol" name="vol" min="0" max="100" class="custom-input"><br>
+
+                <label>Time:</label><br>
+                <input type="time" name="time" class="custom-input"><br>
+
+                <label>Week</label><br>
+                <input type="week" name="week" class="custom-input"><br><br>
+                
+                <input type="submit" value="Submit">
+                <input type="reset" value="Reset">
+                </fieldset>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

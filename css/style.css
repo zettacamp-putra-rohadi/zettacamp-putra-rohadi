@@ -1,3 +1,28 @@
+.navbar {
+    background-color: pink;
+    padding: 7px 25px;
+    display: flex;
+    justify-content: space-evenly;
+    border-radius: 15px;
+}
+
+.navbar ul {
+    list-style-type:none;
+}
+
+.navbar li {
+    display: inline;
+    margin: 0px 15px;
+}
+
+.navbar ul li a{
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 #profil{
     margin: 5% 5% 0px 5%;
     padding: 1px 15px;
@@ -34,6 +59,13 @@
     display: flex;
     justify-content: start;
     margin-top: -15px;
+}
+
+.row-3{
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    margin-bottom: 90px;
 }
 
 .col-1{
@@ -82,4 +114,14 @@
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 8px;
+}
+
+#multimedia-form {
+    margin: 5% 5% 0px 5%;
+    padding: 1px 15px;
+    background-color: ghostwhite;
+}
+
+#multimedia-form #form .custom-input{
+width: 384px;
 }
