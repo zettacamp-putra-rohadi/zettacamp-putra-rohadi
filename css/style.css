@@ -1,5 +1,5 @@
 .navbar {
-    background-color: pink;
+    background-color: dodgerblue;
     padding: 7px 25px;
     display: flex;
     justify-content: space-evenly;
@@ -68,6 +68,12 @@
     margin-bottom: 90px;
 }
 
+.row-4{
+    width: 100%;
+    display: flex;
+    justify-content: start;
+}
+
 .col-1{
     width: 100%;
     max-width: 130px;
@@ -96,11 +102,11 @@
     justify-content: center;
 }
 
-#shopping-list .th-custom, .td-custom {
-    padding: 0.5px 8px;
+.th-custom, .td-custom {
+    padding: 0.5px 5px;
 }
 
-#shopping-list img{
+#shopping-list img, #item-list img{
     width: 50px;
     height: auto;
 }
@@ -122,6 +128,31 @@
     background-color: ghostwhite;
 }
 
-#multimedia-form #form .custom-input{
+.custom-input{
 width: 384px;
+height: 25px;
+}
+
+#form-input .my{
+    margin: 5px 0px; 
+}
+
+#output-table{
+    width: 100%;
+}
+
+.td-custom-image{
+    max-width: 120px;
+    padding: 0.5px 5px;   
+}
+
+footer{
+    position: absolute;
+    bottom: 0;
+    width: 98%;
+    height: 40px;
+}
+
+footer p{
+    text-align: center;
 }

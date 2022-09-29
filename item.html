@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body style="background-color: powderblue">
+    <header>
+      <nav>
+        <nav class="navbar">
+          <ul>
+            <li><a href="/item.html">Item</a></li>
+            <li><a href="/item-list.html">Item List</a></li>
+          </ul>
+        </nav>
+      </nav>
+    </header>
+    <main style="margin: 20px 20px">
+      <section id="input-form">
+        <form id="form-input">
+            <div class="row-4">
+              <div class="col-3">
+                <label>First name:</label><br />
+                <input
+                  type="text"
+                  name="fname"
+                  placeholder="Putra"
+                  class="custom-input"
+                  id="fname"
+                /><br />
+
+                <label>Last name:</label><br />
+                <input
+                  type="text"
+                  name="lname"
+                  placeholder="Bagas"
+                  class="custom-input"
+                  id="lname"
+                /><br />
+
+                <label>Biography:</label><br />
+                <textarea
+                  rows="4"
+                  cols="50"
+                  name="biography"
+                  placeholder="Tell me your story"
+                  id="biography"
+                ></textarea
+                ><br />
+
+                <label>Gender:</label><br />
+                <input type="radio" name="gender" value="Male" id="gender" />
+                <label>Male</label><br />
+                <input type="radio" name="gender" value="Female" id="gender" />
+                <label>Female</label><br />
+              </div>
+              <div class="col-3">
+                <label>Email:</label><br />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="example@gmail.com"
+                  class="custom-input"
+                  id="email"
+                /><br />
+
+                <label>Telephone:</label><br />
+                <input
+                  type="number"
+                  name="phone"
+                  placeholder="123456789012"
+                  class="custom-input"
+                  id="phone"
+                /><br />
+
+                <label>Age:</label><br />
+                <input
+                  type="number"
+                  name="age"
+                  placeholder="your age"
+                  class="custom-input"
+                  id="age"
+                /><br />
+
+                <label>Image:</label><br />
+                <input type="file" name="image" accept="image/*" id="image"><br>
+              </div>
+            </div>
+            <br/>
+            <input type="button" onclick="showInput()" value="submit" style="padding: 5px 10px; font-weight: bold"/>
+
+        </form>
+      </section>
+      <section id="output-form">
+        <table class="collapse custom-font" border="1" id="output-table">
+          <caption class="caption-custom">
+            Output Form
+          </caption>
+          <tr>
+            <th class="th-custom">First Name</th>
+            <th class="th-custom">Last Name</th>
+            <th class="th-custom">Biography</th>
+            <th class="th-custom">Gender</th>
+            <th class="th-custom">Email</th>
+            <th class="th-custom">Telephone</th>
+            <th class="th-custom">Age</th>
+            <th class="th-custom">Image</th>
+          </tr>
+          <tr>
+            <td class="td-custom" id="d-fname"></td>
+            <td class="td-custom" id="d-lname"></td>
+            <td class="td-custom" id="d-biography"></td>
+            <td class="td-custom" id="d-gender"></td>
+            <td class="td-custom" id="d-email"></td>
+            <td class="td-custom" id="d-phone"></td>
+            <td class="td-custom" id="d-age"></td>
+            <td class="td-custom-image" ><img id="d-image" src="" alt=""></td>
+          </tr>
+        </table>
+      </section>
+    </main>
+    <footer>
+      <p>Copyright Putra 2022</p>
+    </footer>
+    <script type="text/JavaScript">
+        function showInput(){
+        document.getElementById('d-fname').innerHTML = document.getElementById("fname").value;
+        document.getElementById('d-lname').innerHTML = document.getElementById("fname").value;
+        document.getElementById('d-biography').innerHTML = document.getElementById("biography").value;
+        document.getElementById('d-gender').innerHTML = document.getElementById("gender").value;
+        document.getElementById('d-email').innerHTML = document.getElementById("email").value;
+        document.getElementById('d-phone').innerHTML = document.getElementById("phone").value;
+        document.getElementById('d-age').innerHTML = document.getElementById("age").value;
+        let gambar = document.getElementById("image").value;
+        let hasil = gambar.slice(3)
+        document.getElementById('d-image').src = gambar;
+        console.log(hasil);
+        }
+    </script>
+  </body>
+</html>
