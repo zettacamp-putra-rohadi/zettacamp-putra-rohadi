@@ -7,6 +7,12 @@
     padding: 1em ;
 }
 
+#footer {
+    position: fixed;
+    bottom: 0px;
+    left: 45%;
+ }
+
 .d-flex{
     display: flex;
 }
@@ -17,6 +23,10 @@
 
 .text-center{
     text-align: center;
+}
+
+.custom-font-family{
+    font-family: Inter;
 }
 
 .text1 {
@@ -46,8 +56,8 @@
 }
 
 .navbar img{
-    width: 50px;
-    height: 100%;
+    width: 100%;
+    height: 40px;
 }
 
 .navbar ul {
@@ -192,15 +202,15 @@
 }
 
 .card-custom-margin{
-    margin-left: 140px;
-    margin-right: 70px;
+    margin-left: 110px;
+    margin-right: 40px;
 }
 
 .hero-bg{
     z-index: -1;
     position: absolute;
-    left: 31%;
-    top: 21%;
+    left: 33%;
+    top: 48%;
     opacity: 0.05;
 }
 
@@ -257,4 +267,61 @@
     margin-bottom: 10px;
 }
 
+.register-pos{
+    position: absolute;
+    left: 32%;
+    top: 13%;
+}
+
+#profile img{
+    width: 250px;
+    border-radius: 15px;
+    border: 2px solid white;
+    margin-right: 15px;
+}
+
+.collapse {
+    border-collapse: collapse;
+    /* border: 1px solid rgba(61, 61, 61, 0.534); */
+}
+
+#table-song tr{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+#table-song .custom-tr-color{
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#table-song{
+    margin-top: 50px;
+}
+
+#table-song th, #table-song td{
+    padding: 15px 25px;
+}
+
+#table-song td{
+    text-align: center;
+}
+
+#song-listing img{
+    width: 150px;
+}
+
+#album-preview img{
+    width: 230px;
+    height: 100%;
+    float: left;
+    margin-right: 25px;
+}
+
+.h1-custom2 {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 60px;
+    color: #091a7a;
+}
 
