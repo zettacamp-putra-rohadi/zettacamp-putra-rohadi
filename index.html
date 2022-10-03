@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiple Table</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+        body{
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+
+        .table-style{
+            border-collapse: collapse;
+            border: 1px solid black;
+            width: 100%;
+        }
+
+        .table-style caption{
+            font-weight: bold;
+            margin: 20px auto 5px auto;
+        }
+
+        .table-style tr, th, td{
+            border: 1px solid black;
+            padding: 5px 10px;
+        }
+
+        table:nth-child(1) tr:nth-child(1) {
+            background-color: limegreen;
+        }
+
+        table:nth-child(2) tr:nth-child(2) {
+            background-color: red;
+        }
+
+        table:nth-child(3) tr:nth-child(3) {
+            background-color: blue;
+        }
+    </style>
+  </head>
+  <body>
+    <div style="text-align: center; max-width: 750px;">
+        <table class="table-style" >
+            <caption>Table Hobby</caption>
+            <tr>
+                <th>Number</th>
+                <th>Hobby</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Badminton</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Playing Video Games</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Archery</td>
+            </tr>
+        </table>
+        <table class="table-style">
+            <caption>Table Favorites Movies</caption>
+            <tr>
+                <th>Number</th>
+                <th>Movie Name</th>
+                <th>Year</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Iron Man</td>
+                <td>2008</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Ant Man</td>
+                <td>2015</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Black Panther</td>
+                <td>2018</td>
+            </tr>
+        </table>
+        <table class="table-style">
+            <caption>Table Favorites Song</caption>
+            <tr>
+                <th>Number</th>
+                <th>Artist</th>
+                <th>Title</th>
+                <th>Duration</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Neck Deep</td>
+                <td>A Part Of Me</td>
+                <td>03:09</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Neck Deep</td>
+                <td>December</td>
+                <td>03:39</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Neck Deep</td>
+                <td>When You Know</td>
+                <td>03:09</td>
+            </tr>
+        </table>
+    </div>
+  </body>
+</html>
