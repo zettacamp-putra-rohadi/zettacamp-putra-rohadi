@@ -1,0 +1,43 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    color: darkgreen;
+}
+
+body {
+    background-color: pink;
+}
+
+#daftar-film{
+    display: flex;
+    justify-content: center;
+}
+
+.container{
+    width: 1280px;
+}
+
+.row{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: white;
+    max-width: 250px;
+    border: 0px solid black;
+    border-radius: 15px;
+    box-shadow: 0 0px 15px rgba(0, 0, 0, 0.5);
+    padding: 20px 25px;
+    margin: 5px 10px;
+}
+
+.card img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.card > h4{
+    color: black;
+    font-size: 18px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
