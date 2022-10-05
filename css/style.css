@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Poppins&display=swap");
+
+* {
+    font-family: Poppins;
+}
+
+#popular-product{
+    display: flex;
+    justify-content: center;
+}
+
+.container{
+    width: 1000px;
+}
+
+h3{
+    margin: 0px;
+    text-align: center;
+}
+
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card {
+    background-color: white;
+    max-width: 240px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    /* box-shadow: 0 0px 15px rgba(0, 0, 0, 0.5); */
+    padding: 15px 20px;
+    text-align: center;
+}
+
+.card:hover{
+    box-shadow: 0 0px 15px rgba(0, 0, 0, 0.5);
+}
+
+.card:nth-child(4), .card:nth-child(5), .card:nth-child(6){
+    margin: 1rem 0rem;
+}
+
+.card h4::before {
+    content: "Iphone ";
+}
+
+.card img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.card .button{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.card a {
+    padding: 10px 25px;
+    background-color: #091a7a;
+    color: white;
+    border: 1px solid #091a7a;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.card a:hover {
+    background-color: white;
+    color: #091a7a;
+    border: 1px solid #091a7a;
+}
+
+footer{
+    background-color: pink;
+    text-align: center;
+    padding: 40px 0px;
+}
+
+footer a{
+    text-decoration: none;
+    color: black;
+    margin: 0px 8px;
+}
