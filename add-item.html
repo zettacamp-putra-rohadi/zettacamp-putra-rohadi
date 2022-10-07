@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS day3</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <a class="pt-1 pb-1 text-center" href="index.html">Hostinger</a>
+        <a class="pt-1 pb-1 text-center" href="shopping-list.html">Shopping List</a>
+      </nav>
+    </header>
+    <main>
+      <section id="shopping-list">
+        <div class="container">
+          <div class="mt-2">
+            <a href="shopping-list.html" style="text-decoration: none;">&#8592; Shopping List</a>
+            <h3>Shopping List</h3>
+          </div>
+          <div class="mb-3">
+            <form id="form-add-item" action="">
+                <div class="row justify-space-evenly">
+                    <div class="form-left">
+                        <div>
+                        <label for="name">Product Name</label><br>
+                        <input type="text" name="name" id="name" />
+                        </div>
+                        <div>
+                        <label for="price">Price</label><br>
+                        <input type="number" name="price" id="price" />
+                        </div>
+                    </div>
+                    <div class="form-right">
+                      <input type="file" name="image" id="image" hidden >
+                      <label for="image">+ Upload Product Image</label>
+                    </div>
+                </div>
+                <button type="submit">+ Submit</button>
+            </form>
+          </div>
+          <h3 class="text-center mb-0">Card Preview</h3>
+          <div class="row margin-custom justify-space-evenly mb-3">
+            <!-- card-1 -->
+            <div class="card py-1 px-1 mt-1 rounded-md text-center">
+              <img class="rounded-md" src="img/1.webp" alt="iphone" />
+              <h4>Unlimited Hosting Paket Personal</h4>
+              <p>
+                Rp 29.000/bulan
+              </p>
+            </div>
+            <!-- card-2 -->
+            <div class="card py-1 px-1 mt-1 rounded-md text-center">
+              <img class="rounded-md" src="img/1.webp" alt="iphone" />
+              <h4>Cloud Hosting Paket Premium</h4>
+              <p>
+                Rp 122.400/bulan
+              </p>
+            </div>
+            <!-- card-3 -->
+            <div class="card py-1 px-1 mt-1 rounded-md text-center">
+              <img class="rounded-md" src="img/1.webp" alt="iphone" />
+              <h4>Cloud VPS Hosting</h4>
+              <p>
+                Rp. 104.000/bulan
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="text-center py-3 mt-1">
+      <a href="about-me.html" class="mx-1">About</a>
+      <a href="contact-me.html" class="mx-1">Contact</a>
+    </footer>
+  </body>
+</html>

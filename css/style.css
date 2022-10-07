@@ -1,0 +1,376 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Poppins&display=swap");
+
+* {
+  font-family: Poppins;
+}
+
+body {
+  margin: 0px;
+}
+
+.pt-1 {
+  padding-top: 1rem;
+}
+
+.pt-2 {
+  padding-top: 1.5rem;
+}
+
+.pt-3 {
+  padding-top: 2rem;
+}
+
+.pb-1 {
+  padding-bottom: 1rem;
+}
+
+.pb-2 {
+  padding-bottom: 1.5rem;
+}
+
+.pb-3 {
+  padding-bottom: 2rem;
+}
+
+.pl-1 {
+  padding-left: 1rem;
+}
+
+.pl-2 {
+  padding-left: 1.5rem;
+}
+
+.pl-3 {
+  padding-left: 2rem;
+}
+
+.pr-1 {
+  padding-right: 1rem;
+}
+
+.pr-2 {
+  padding-right: 1.5rem;
+}
+
+.pr-3 {
+  padding-right: 2rem;
+}
+
+.py-1 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.py-2 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.py-3 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.px-1 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.px-2 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.px-3 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.mt-0 {
+  margin-top: 0rem;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.mt-2 {
+  margin-top: 1.5rem;
+}
+
+.mt-3 {
+  margin-top: 2rem;
+}
+
+.mb-0 {
+  margin-bottom: 0rem;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 2rem;
+}
+
+.my-1 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.my-2 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.my-3 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.mr-1 {
+  margin-right: 1rem;
+}
+
+.mr-2 {
+  margin-right: 1.5rem;
+}
+
+.mr-3 {
+  margin-right: 2rem;
+}
+
+.mx-1 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.mx-2 {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+.mx-3 {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.rounded-sm {
+  border-radius: 8px;
+}
+
+.rounded-md {
+  border-radius: 15px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+#shopping-list {
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 1000px;
+}
+
+.navbar {
+  position: sticky;
+  top: 0px;
+  width: 100vw;
+  background-color: pink;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar a {
+  margin: 0px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 20px;
+  color: black;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.justify-space-evenly {
+    justify-content: space-evenly;
+}
+
+.card-hero{
+    max-width: 500px;
+}
+
+.card {
+  background-color: white;
+  width: 220px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.card:hover {
+  box-shadow: 0 0px 15px rgba(0, 0, 0, 0.5);
+}
+
+.card h4::before {
+  content: "Iphone ";
+}
+
+.card img {
+  width: 100%;
+}
+
+footer {
+  background-color: pink;
+  /* position: sticky; */
+  /* bottom: 0px; */
+}
+
+footer a {
+  text-decoration: none;
+  color: black;
+}
+
+#list-item {
+  padding: 1rem;
+}
+
+.row-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.card-list {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  width: 630px;
+  padding: 5px 30px 5px 40px;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  height: 600px;
+}
+
+.card-list ul {
+  padding: 0px;
+}
+
+.card-list li {
+  list-style: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.card-list .card-image img {
+  width: 40px;
+}
+
+.card-list .card-image {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.card-list .card-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.text-header-shop-div {
+    display: flex; 
+    justify-content: space-between; 
+    margin: 8px 0px;
+}
+
+.text-header-shop-div a {
+    padding: 7px 13px;
+    background-color: pink;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.text-header-shop {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0px;
+  padding: 0px;
+}
+
+#form-add-item .form-left{
+    width: 50%;
+}
+
+
+#form-add-item .form-left input{
+    width: 90%;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+#form-add-item .form-right{
+    width: 45%;
+    padding: 50px 0px;
+    text-align: center;
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+#form-add-item .form-right label{
+    display: inline-block;
+    background-color: pink;
+    color: black;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+#form-add-item button{
+    position: absolute;
+    right: 205px;
+    top: 130px;
+    padding: 8px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    background-color: pink;
+    cursor: pointer;
+}
+
+#form-contact input{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+#form-contact textarea{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+#form-contact button{
+    padding: 8px 20px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    background-color: pink;
+}
