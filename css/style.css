@@ -304,6 +304,10 @@ footer a {
     border-radius: 8px;
 }
 
+.text-header-shop-div a:hover {
+    scale: 1.1;
+}
+
 .text-header-shop {
   display: inline-block;
   vertical-align: middle;
@@ -350,6 +354,10 @@ footer a {
     border-radius: 4px;
     background-color: pink;
     cursor: pointer;
+}
+
+#form-add-item button:hover{
+    scale: 1.1;
 }
 
 #form-contact input{
