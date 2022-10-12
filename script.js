@@ -1,27 +1,26 @@
-function book(price, discount, tax, bookstock, bookpurchase) {
-  const nameBook = "The Sea Speak His Name";
+function book(bookName, discount, tax, bookstock, bookpurchase) {
+  let price = 1000;
+  const totalDiscount = (price * discount) / 100;
+  const priceAfterDiscount = price - totalDiscount;
+  const totalTax = (priceAfterDiscount * tax) / 100;
+  price = priceAfterDiscount + totalTax;
+  let totalPrice = 0;
 
-  if (bookpurchase > bookstock) {
-    return "You cannot buy more than in stock";
-  } else {
-    let priceBook = 0;
-    let totalDiscount = 0;
-    let totalTax = 0;
-    for (i = 1; i <= bookpurchase; i++) {
-      priceBook = priceBook + price;
+  for (let i = 0; i < bookpurchase; i++) {
+    totalPrice = totalPrice + price;
+    if (bookstock === 0) {
+      return `You cannot buy more than in stock. 
+      \nStock = ${bookstock}
+      \nYou Bought = ${i} books
+      \nTotal Price = ${totalPrice}`;
+    } else {
+      totalPrice += price;
+      bookstock--;
     }
-    totalDiscount = (priceBook * discount) / 100;
-    totalTax = (priceBook * tax) / 100;
-    totalPrice = priceBook - totalDiscount + totalTax;
-    left = bookstock - bookpurchase;
-    return `Price : ${priceBook} 
-    \nTotal Price After Discount : ${priceBook - totalDiscount} 
-    \nTotal Tax : ${totalTax}
-    \nTotal Price : ${totalPrice}
-    \nLeft in stock: ${left}`;
   }
+  return `Total Price = ${totalPrice}
+      \nLeft in stock = ${bookstock}`;
 };
 
-const detail = book(1200, 10, 5, 40, 10 );
-
+const detail = book("And",10,5,2,3);
 console.log(detail);
