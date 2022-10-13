@@ -72,31 +72,29 @@ let songs = [
 ];
 
 //song based on artist
-function songByArtist(artist){
-  return songs.filter(a => a.artist === artist) ;
+function songByArtist(artist,playlist){
+  return playlist.filter(a => a.artist === artist) ;
 };
 
 //song based on genre
-function songByGenre(genre){
-  return songs.filter(a => a.genre === genre);
+function songByGenre(genre,playlist){
+  return playlist.filter(a => a.genre === genre);
 };
 
 //list of songs with a total duration of less than 1 hour and random title
-function playlist(){
+function playlist(playlistSong){
   let time = 0;
   let playlist = [];
-  for (let i = 0; i < songs.length; i ++) {
-    const random = Math.floor(Math.random() * songs.length);
-    let temp = playlist.some(a => a.id === songs[random].id);  
+  for (let i = 0; i < playlistSong.length; i ++) {
+    const random = Math.floor(Math.random() * playlistSong.length);
+    let temp = playlist.some(a => a.id === playlistSong[random].id);  
     if (temp == false) {
-      time += convertDurationToSeconds(songs[random].duration);
+      time += convertDurationToSeconds(playlistSong[random].duration);
       if (time <= 3600) {
-        playlist.push(songs[random]);
+        playlist.push(playlistSong[random]);
       } else {
-        time -= convertDurationToSeconds(songs[random].duration);
-        break;
+        time -= convertDurationToSeconds(playlistSong[random].duration);
       }
-      temp = true;
     } 
   }
   console.log("Playlist duration :",time,"Seconds");
@@ -104,9 +102,9 @@ function playlist(){
 };
 
 function convertDurationToSeconds(duration) {
-  return duration.split(":").reduce((acc, time) => (60 * acc) + +time);
+  return duration.split(":").reduce((prev, next) => (60 * prev) + +next);
 };
 
-console.log("List Song Based On Artist\n",songByArtist("Keane"));
-console.log("List Song Based On Genre\n",songByGenre("Rock"));
-console.log(playlist());
+console.log("List Song Based On Artist\n",songByArtist("Keane",songs));
+console.log("List Song Based On Genre\n",songByGenre("Rock", songs));
+console.log(playlist(songs));
