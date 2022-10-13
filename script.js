@@ -92,11 +92,11 @@ function playlist(){
       time += convertDurationToSeconds(songs[random].duration);
       if (time <= 3600) {
         playlist.push(songs[random]);
-        temp = true;
       } else {
         time -= convertDurationToSeconds(songs[random].duration);
         break;
       }
+      temp = true;
     } 
   }
   console.log("Playlist duration :",time,"Seconds");
