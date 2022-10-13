@@ -24,13 +24,14 @@ function book(bookName, discount, tax, bookstock, bookpurchase, terms) {
   let creditPay = 0;
   let credit = [];
   for (let i = 0; i < terms; i++) {
-    credit[i] = 
+    credit.push( 
       {
       Month : i+1,
       'Credit To Be Paid' : termEachMonth,
       'Credit Already Paid' : creditPay =+ termEachMonth,
       Remaining : totalPrice -= termEachMonth,
-      };
+      }
+      );
     }
   console.log(credit);
   const {Month} = credit[1];     //destructuring
