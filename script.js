@@ -33,7 +33,7 @@ function jwtAuth(req, res, next) {
   })
 }
 
-app.get('/api/buybook', jwtAuth, (req, res) => {
+app.get('/api/buybook', jwtAuth, async(req, res) => {
   const username = req.user;
   const books = req.body;
   const bookInformation = [
@@ -42,13 +42,14 @@ app.get('/api/buybook', jwtAuth, (req, res) => {
     books.tax,
     books.bookStock,
     books.bookPurchase,
-    books.terms]
-  const transaction = book(...bookInformation);
+    books.terms,
+    books.addtionalTerms]
+  const transaction = await book(...bookInformation);
   const result = {username : username, transaction: transaction};
   res.send(result)
 })
 
-function book(bookName, discount, tax, bookstock, bookpurchase, terms) {
+async function book(bookName, discount, tax, bookstock, bookpurchase, terms, addtionalTerms) {
   let price = 1000;
   const priceAfterDiscount = price - ((price * discount) / 100);
   price = priceAfterDiscount + ((priceAfterDiscount * tax) / 100);
@@ -64,25 +65,63 @@ function book(bookName, discount, tax, bookstock, bookpurchase, terms) {
       bookstock--;
     }
   }
-  const convTotalPrice = [totalPrice];
-  const totalPrice2 = convTotalPrice.map(x => x / terms)
-  termEachMonth = totalPrice2[0];
+  let termEachMonth = await calculateTerm(terms, totalPrice);
+  // console.log(termEachMonth);
+  let credit = await calculateCredit(termEachMonth, totalPrice, bookName, terms, addtionalTerms);
+  // console.log(credit);
+  return credit;
+};
+
+function calculateTerm(terms, totalPrice) {
+  const convTotalPrice = totalPrice / terms;
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve (convTotalPrice);
+    }, 0);
+  });
+}
+
+function calculateNewTerm(termEachMonth, addtionalTerms) {
+  return termEachMonth + addtionalTerms
+};
+
+async function calculateCredit(termEachMonth, totalPrice, bookName, terms, addtionalTerms) {
+  let newTermEachMonth = await calculateNewTerm(termEachMonth, addtionalTerms);
   let creditPay = 0;
   let credit = [];
   for (let i = 0; i < terms; i++) {
-    credit.push( 
-      {
-      'Book Name' : bookName,
-      Month : i+1,
-      'Credit To Be Paid' : termEachMonth,
-      'Credit Already Paid' : creditPay =+ termEachMonth,
-      Remaining : totalPrice -= termEachMonth,
-      }
+    if (i <= 1){
+      credit.push( 
+        {
+        'Book Name' : bookName,
+        Month : i+1,
+        'Credit To Be Paid' : termEachMonth,
+        'Credit Already Paid' : creditPay = creditPay + termEachMonth,
+        Remaining : totalPrice -= termEachMonth,
+        }
       );
+    } else {
+      credit.push( 
+        {
+        'Book Name' : bookName,
+        Month : i+1,
+        'New Price Credit To Be Paid' : newTermEachMonth,
+        'Credit Already Paid' : creditPay = creditPay + newTermEachMonth,
+        Remaining : totalPrice -= newTermEachMonth,
+        }
+      );
+      if (credit[i].Remaining <= 0) {
+        break;
+      }
     }
-
-  return credit;
+    }
+    
+    return credit;
 };
+
+
+// let bookp = book("bookName", 10, 5, 5, 3, 5,500);
+// console.log(bookp);
 
 
 app.listen(port)
