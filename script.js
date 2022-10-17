@@ -81,7 +81,7 @@ function calculateTerm(terms, totalPrice) {
   });
 }
 
-function calculateNewTerm(termEachMonth, addtionalTerms) {
+async function calculateNewTerm(termEachMonth, addtionalTerms) {
   return termEachMonth + addtionalTerms
 };
 
@@ -90,13 +90,13 @@ async function calculateCredit(termEachMonth, totalPrice, bookName, terms, addti
   let creditPay = 0;
   let credit = [];
   for (let i = 0; i < terms; i++) {
-    if (i <= 1){
+    if (i === 2){
       credit.push( 
         {
         'Book Name' : bookName,
         Month : i+1,
-        'Credit To Be Paid' : termEachMonth,
-        'Credit Already Paid' : creditPay = creditPay + termEachMonth,
+        'New Price Credit To Be Paid' : newTermEachMonth,
+        'Credit Already Paid' : creditPay = creditPay + newTermEachMonth,
         Remaining : totalPrice -= termEachMonth,
         }
       );
@@ -105,8 +105,8 @@ async function calculateCredit(termEachMonth, totalPrice, bookName, terms, addti
         {
         'Book Name' : bookName,
         Month : i+1,
-        'New Price Credit To Be Paid' : newTermEachMonth,
-        'Credit Already Paid' : creditPay = creditPay + newTermEachMonth,
+        'Credit To Be Paid' : termEachMonth,
+        'Credit Already Paid' : creditPay = creditPay + termEachMonth,
         Remaining : totalPrice -= newTermEachMonth,
         }
       );
