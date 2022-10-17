@@ -8,7 +8,7 @@ const port = 3000
 app.use(bodyParser.json());
 
 function generateAccessToken(payload) {
-  return jwt.sign(payload, 'secret', { expiresIn: '1800s' });
+  return jwt.sign(payload, 'secret');
 }
 
 app.post('/api/maketoken', (req, res) => {
@@ -16,7 +16,7 @@ app.post('/api/maketoken', (req, res) => {
   const password = req.body.password;
   const token = generateAccessToken({ username: username, password: password });
 
-  res.send(token);
+  res.send({token : token});
 })
 
 function jwtAuth(req, res, next) {
@@ -28,11 +28,13 @@ function jwtAuth(req, res, next) {
   jwt.verify(token, 'secret', (err, user) => {
     if (err) return res.sendStatus(403)
     console.log("antum user asli");
+    req.user = user.username;
     next()
   })
 }
 
 app.get('/api/buybook', jwtAuth, (req, res) => {
+  const username = req.user;
   const books = req.body;
   const bookInformation = [
     books.bookName,
@@ -42,7 +44,8 @@ app.get('/api/buybook', jwtAuth, (req, res) => {
     books.bookPurchase,
     books.terms]
   const transaction = book(...bookInformation);
-  res.send(transaction)
+  const result = {username : username, transaction: transaction};
+  res.send(result)
 })
 
 function book(bookName, discount, tax, bookstock, bookpurchase, terms) {
