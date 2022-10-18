@@ -119,9 +119,42 @@ async function calculateCredit(termEachMonth, totalPrice, bookName, terms, addti
     return credit;
 };
 
+const fs = require('fs').promise;
 
-// let bookp = book("bookName", 10, 5, 5, 3, 5,500);
-// console.log(bookp);
+app.get('/api/readfile',jwtAuth, (req, res) => {
+  const file = readFile('./text.txt');
+  res.send("succes read file");
+})
 
+app.get('/api/readfilewa',jwtAuth, (req, res) => {
+  const file = readFileWa('./text.txt');
+  res.send("succes read file");
+})
+
+async function readFile(fileName) {
+  console.log('Membaca file...');
+  const data = await fs.readFile(fileName, 'utf8');
+  console.log(data);
+  console.log('Selesai membaca file')
+  return data;
+}
+
+function readFileWa(fileName) {
+  console.log('Membaca file...');
+  const data = fs.readFile(fileName, 'utf8')
+    .then(result => {
+        console.log(result.toString());
+    })
+    .catch(err => console.log(err.message))
+    .finally(() => console.log('Selesai membaca file'));
+  // console.log(data);
+  return data;
+}
+
+
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
+eventEmitter.on('read file', readFile);
+eventEmitter.emit('read file', './text.txt');
 
 app.listen(port)
