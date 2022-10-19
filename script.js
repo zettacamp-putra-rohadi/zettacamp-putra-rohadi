@@ -154,12 +154,63 @@ function readFileWa(fileName) {
   return data;
 }
 
-const test = readFileWa('./text.txt');
-console.log(test);
+// const test = readFileWa('./text.txt');
+// console.log(test);
 
 // var events = require('events');
 // var eventEmitter = new events.EventEmitter();
 // eventEmitter.on('read file', readFileWa);
 // eventEmitter.emit('read file', './text.txt');
+
+app.get('/api/readdata', (req, res) => {
+  const data = readdata();
+  res.send(data);
+})
+
+const listOfBooks = [
+  {
+  name : 'Harry Potter',
+  price : 1000,
+  },
+  {
+  name : 'Lord of the Ring',
+  price : 2000,
+  },
+  {
+  name : 'The Hobbit',
+  price : 3000,
+  }
+]
+readdata();
+function readdata (){
+  // using set
+  let set = new Set();
+  let setData = [];
+  for (let i = 0; i < listOfBooks.length; i++) {
+    set.add(listOfBooks[i]);
+  }
+  for (let user of set) {
+    setData.push(user);
+  }
+  console.log("using set");
+  console.log(set);
+  console.log(setData);
+
+  //using map
+  let map = new Map();
+  let mapData = [];
+  for (let i = 0; i < listOfBooks.length; i++) {
+    map.set(listOfBooks[i].name, listOfBooks[i].price);
+  }
+  for (let [key, value] of map) {
+    mapData.push({name : key, price : value});
+  }
+  console.log("using map");
+  console.log(map);
+  console.log(mapData);
+
+  let returnData = {"using set" : setData, "using map" : mapData};
+  return returnData;
+}
 
 app.listen(port)
