@@ -1,11 +1,64 @@
 const bodyParser = require('body-parser');
 const express = require('express')
 const jwt = require("jsonwebtoken");
+const mongoose = require('mongoose');
+const bookModel = require('./model');
 
-const app = express()
 const port = 3000
-
+const app = express()
 app.use(bodyParser.json());
+
+mongoose.connect('mongodb://localhost:27017/zettacamp');
+
+//read
+app.get('/books', jwtAuth, async (req, res) => {
+    const books = await bookModel.find({});
+    try {
+        res.send(books);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+//create
+app.post('/books', jwtAuth, async (req, res) => {
+    const books = new bookModel(req.body);
+    try {
+        await books.save();
+        res.send("Berhasil Menambahkan Buku");
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+//update
+app.patch('/books/:id', jwtAuth, async (req, res) => {
+    try {
+        await bookModel.findByIdAndUpdate(req.params.id, req.body);
+        res.send("Berhasil Mengubah Buku");
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+//delete
+app.delete('/books/:id', jwtAuth, async (req, res) => {
+    try {
+        await bookModel.findByIdAndDelete(req.params.id);
+        res.send("Berhasil Menghapus Buku");
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+app.get('/books/find/:name', jwtAuth, async (req, res) => {
+  const books = await bookModel.find({'name' : req.params.name});
+  try {
+      res.send(books);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
 
 function generateAccessToken(payload) {
   return jwt.sign(payload, 'secret');
@@ -181,7 +234,7 @@ const listOfBooks = [
   price : 3000,
   }
 ]
-readdata();
+
 function readdata (){
   // using set
   let set = new Set();
