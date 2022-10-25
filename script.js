@@ -3,6 +3,7 @@ const express = require('express')
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const bookModel = require('./model');
+const bookshelfModel = require('./bookshelf-model');
 
 const port = 3000
 const app = express()
@@ -55,6 +56,65 @@ app.get('/books/find/:name', jwtAuth, async (req, res) => {
   const books = await bookModel.find({'name' : req.params.name});
   try {
       res.send(books);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
+
+//get all bookshelf
+app.get('/bookshelf', jwtAuth, async (req, res) => {
+  const bookshelf = await bookshelfModel.find({});
+  try {
+      res.send(bookshelf);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+})
+
+//insert bookshelf
+app.post('/bookshelf', jwtAuth, async (req,res) =>{
+  const bookshelf = new bookshelfModel(req.body);
+  try {
+      await bookshelf.save();
+      res.send("Berhasil Menambahkan Rak Buku");
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
+
+app.get('/bookshelf/book/:id/:id2', jwtAuth, async (req, res) => {
+  const bookshelf = await bookshelfModel.find({book_id:{ $elemMatch : {$in: [req.params.id, req.params.id2]}}});
+  try {
+      res.send(bookshelf);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
+
+app.get('/bookshelf/book/:id', jwtAuth, async (req, res) => {
+  const bookshelf = await bookshelfModel.find({book_id:{ $elemMatch : {$in: [req.params.id]}}});
+  try {
+      res.send(bookshelf);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
+
+//update bookshelf
+app.patch('/bookshelf/:id', jwtAuth, async (req, res) => {
+  try {
+      const result = await bookshelfModel.findByIdAndUpdate(req.params.id, req.body, {new: true});
+      res.send(result);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
+
+//delete bookshelf
+app.delete('/bookshelf/:id', jwtAuth, async (req, res) => {
+  try {
+      await bookshelfModel.findByIdAndDelete(req.params.id);
+      res.send("Berhasil Menghapus Bookshelf");
   } catch (err) {
       res.status(500).send(err);
   }
