@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const bookModel = require('./model');
 const bookshelfModel = require('./bookshelf-model');
+var ObjectId = require('mongodb').ObjectId; 
 
 const port = 3000
 const app = express()
@@ -73,17 +74,40 @@ app.get('/bookshelf', jwtAuth, async (req, res) => {
 
 //insert bookshelf
 app.post('/bookshelf', jwtAuth, async (req,res) =>{
-  const bookshelf = new bookshelfModel(req.body);
+  // const bookshelf = new bookshelfModel(req.body);
+  const insertedData = req.body;
+  console.log(insertedData.book_ids)
   try {
-      await bookshelf.save();
-      res.send("Berhasil Menambahkan Rak Buku");
+      // const result = await bookshelfModel.insertOne({
+      //   shelf_name: insertedData.shelf_name,
+      //   book_ids: insertedData.book_ids,
+      //   datetime: insertedData.datetime
+      // });
+      const result = new bookshelfModel({
+        shelf_name: insertedData.shelf_name,
+        book_ids: insertedData.book_ids,
+        datetime: insertedData.datetime});
+        const hasil = await result.save();
+      res.send(hasil);
   } catch (err) {
       res.status(500).send(err);
   }
 });
 
 app.get('/bookshelf/book/:id/:id2', jwtAuth, async (req, res) => {
-  const bookshelf = await bookshelfModel.find({book_id:{ $elemMatch : {$in: [req.params.id, req.params.id2]}}});
+  const id = req.params.id;
+  const id2 = req.params.id2;
+  const o_id = new ObjectId(id);
+  const o_id2 = new ObjectId(id2);
+  const bookshelf = await bookshelfModel.find({
+    book_ids: { 
+      $elemMatch : {
+        book_id : {
+          $in: [o_id, o_id2]
+        }
+      }
+    }
+  });
   try {
       res.send(bookshelf);
   } catch (err) {
@@ -92,7 +116,17 @@ app.get('/bookshelf/book/:id/:id2', jwtAuth, async (req, res) => {
 });
 
 app.get('/bookshelf/book/:id', jwtAuth, async (req, res) => {
-  const bookshelf = await bookshelfModel.find({book_id:{ $elemMatch : {$in: [req.params.id]}}});
+  const id = req.params.id;
+  const o_id = new ObjectId(id);
+  const bookshelf = await bookshelfModel.find({
+    book_ids: { 
+      $elemMatch : {
+        book_id: { 
+          $in: [o_id]
+        }
+      }
+    }
+  });
   try {
       res.send(bookshelf);
   } catch (err) {
@@ -104,6 +138,23 @@ app.get('/bookshelf/book/:id', jwtAuth, async (req, res) => {
 app.patch('/bookshelf/:id', jwtAuth, async (req, res) => {
   try {
       const result = await bookshelfModel.findByIdAndUpdate(req.params.id, req.body, {new: true});
+      res.send(result);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
+
+//update using array filters
+app.put('/bookshelf/updatebook', jwtAuth, async (req, res) => {
+  try {
+      const result = await bookshelfModel.updateMany(
+        { }, 
+        { $set: { "datetime.$[elem].date": "2022-10-27" } },
+        // { arrayFilters: [ { "elem.stock": {$gte:6} } ], timestamps: false, strict: false}
+        { arrayFilters: [ { "elem.date": {$eq:"2022-10-26"} } ], timestamps: false, strict: false}
+      );
+      // const result = await bookshelfModel.find({});
+      console.log(result);
       res.send(result);
   } catch (err) {
       res.status(500).send(err);
