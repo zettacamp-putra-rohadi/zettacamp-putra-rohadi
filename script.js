@@ -171,6 +171,35 @@ app.delete('/bookshelf/:id', jwtAuth, async (req, res) => {
   }
 });
 
+app.get('/bookshelf/aggregate', jwtAuth, async (req, res) => {
+  const query1 = req.query.key;     //$book_ids
+  const query2 = req.query.key2;    //$book_ids.book_id
+  const bookshelf = await bookshelfModel.aggregate([
+    {
+      $addFields: {
+        totalStock : {
+            $sum : query2
+        }
+      }
+    },
+    { $unwind : query1 },
+    {
+      $project : {
+        // "book_ids.book_id":1,
+        book_ids:1,
+        shelf_name:1,
+        totalStock:1
+      }
+    }
+  ]);
+  try {
+      res.send(bookshelf);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
+
+
 function generateAccessToken(payload) {
   return jwt.sign(payload, 'secret');
 }
