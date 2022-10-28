@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const bookModel = require('./model');
 const bookshelfModel = require('./bookshelf-model');
-var ObjectId = require('mongodb').ObjectId; 
+// var ObjectId = require('mongoose').ObjectId; 
 
 const port = 3000
 const app = express()
@@ -172,23 +172,52 @@ app.delete('/bookshelf/:id', jwtAuth, async (req, res) => {
 });
 
 app.get('/bookshelf/aggregate', jwtAuth, async (req, res) => {
-  const query1 = req.query.key;     //$book_ids
-  const query2 = req.query.key2;    //$book_ids.book_id
+  const getId_book = req.query.id_book;
+  const idBook = mongoose.Types.ObjectId(getId_book);
   const bookshelf = await bookshelfModel.aggregate([
     {
       $addFields: {
-        totalStock : {
-            $sum : query2
+      totalStock : {
+          $sum : "$book_ids.stock"
         }
       }
     },
-    { $unwind : query1 },
+    { $unwind : "$book_ids" },
+    {
+      $match : {"book_ids.book_id" : idBook}
+    },
+    {
+      $sort : {totalStock : 1}
+    },
+    {
+      $lookup:
+      {
+          from : "Books",
+          localField: "book_ids.book_id",
+          foreignField: "_id",
+          as:"book_data"
+      }
+    },
+    {
+      $addFields: {
+        bookName : {
+            $reduce:{
+                input: "$book_data.name",
+                initialValue: "",
+                in: { $concat : ["$$value", "$$this"] }
+            }
+        }
+      }  
+    },
     {
       $project : {
-        // "book_ids.book_id":1,
-        book_ids:1,
+        _id : 0,
+        "book_ids.stock":1,
+        "book_ids.book_id":1,
         shelf_name:1,
-        totalStock:1
+        totalStock:1,
+        book_data:1,
+        conclusion: { $concat:["$bookName"," terdapat pada ","$shelf_name"]}
       }
     }
   ]);
@@ -198,6 +227,7 @@ app.get('/bookshelf/aggregate', jwtAuth, async (req, res) => {
       res.status(500).send(err);
   }
 });
+
 
 
 function generateAccessToken(payload) {
