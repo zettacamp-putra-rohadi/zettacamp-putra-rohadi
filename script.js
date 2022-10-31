@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const bookModel = require('./model');
 const bookshelfModel = require('./bookshelf-model');
+const { get } = require('http');
 // var ObjectId = require('mongoose').ObjectId; 
 
 const port = 3000
@@ -228,6 +229,41 @@ app.get('/bookshelf/aggregate', jwtAuth, async (req, res) => {
   }
 });
 
+app.get('/getbookperpage', jwtAuth, async (req, res) => {
+  const getpage = +req.query.page;
+  const limit = +req.query.limit;
+  const minPrice = +req.query.minprice;
+  const page = limit * getpage;
+  const book = await bookModel.aggregate([
+    {
+      $match : {price : {$gte : minPrice}}
+    },
+    {
+      $facet : {
+        "data" : [
+          {$skip : page},
+          {$limit : limit}
+        ],
+        "page_info" : [
+          {
+            $group : {
+              _id : null,
+              total : {$sum : 1}
+            }
+          },
+          {
+            $project : { _id : 0}
+          }
+        ]
+      }
+    }
+  ])
+  try {
+      res.send(book);
+  } catch (err) {
+      res.status(500).send(err);
+  }
+})
 
 
 function generateAccessToken(payload) {
