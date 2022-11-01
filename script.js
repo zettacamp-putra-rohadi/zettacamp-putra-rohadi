@@ -26,6 +26,7 @@ function songByGenre(genre,listSong){
 function playlist(playlistSong, duration){
   let time = 0;
   let playlist = [];
+  console.log(playlistSong);
   let maxDuration = convertDurationToSeconds(duration);
   for (let i = 0; i < playlistSong.length; i ++) {
     const random = Math.floor(Math.random() * playlistSong.length);
@@ -75,13 +76,15 @@ function jwtAuth(req, res, next) {
 //get all songs
 app.get('/api/songs', jwtAuth, async(req, res) => {
   const getpage = +req.query.page;
-  if (getpage <= 0){
+  if (getpage < 0){
     res.send({ message: 'Page tidak boleh kurang dari 1' });
   }
   const limit = +req.query.limit;
-  const page = limit * (getpage - 1);
+  const page = limit * getpage ;
+  const sort = +req.query.sort;  
   const result = await songsModel.aggregate([
-    {$sort : {_id : -1} },
+    {$sort : {title : sort} },
+    {$match : {genre : "Jazz"}},
     {
       $facet : {
         "data" : [
@@ -198,6 +201,9 @@ app.get('/api/getplaylists', jwtAuth, async (req, res) => {
           foreignField : "_id",
           as : "listSong"
       }
+    },
+    {
+      $match : {"listSong.genre" : "Rock"}
     },
     { $project : {listSongs : 0}},
     {
