@@ -74,7 +74,6 @@ server.start().then(res => {
     server.applyMiddleware({
         app
     });
-    // run port 
     app.listen(port, () => {
         console.log(`App running in port ${port}`);
     });
