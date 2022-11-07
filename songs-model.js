@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 var SongSchema = new mongoose.Schema(
     {
-        _id : Number,
         artist : String,
         title : String,
         genre : String,
