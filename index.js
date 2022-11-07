@@ -5,8 +5,11 @@ const mongoose = require('mongoose');
 const bookModel = require('./model');
 const bookshelfModel = require('./bookshelf-model');
 const { ApolloServer } = require('apollo-server-express');
-const typeDefs = require('./index.schema');
-const resolvers = require('./index.resolvers');
+// const typeDefs = require('./index.schema');
+// const resolvers = require('./index.resolvers');
+const typeDefs = require('./bookshelf.schema');
+const resolvers = require('./bookshelf.resolvers');
+
 
 const port = 4000
 const app = express()
@@ -22,6 +25,15 @@ mongoose.connect('mongodb://localhost:27017/zettacamp',{
 const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: function ({
+        req
+    }) {
+        req: req;
+        return {
+            
+            req
+        };
+    }
 });
 
 server.start().then(res => {
