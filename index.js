@@ -13,20 +13,23 @@ mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const userAuthen = require("./middleware/auth");
 
-const typeDef = gql`
-  type Test {
-    test: String
-  }
+const { userTypedefs, userResolver } = require("./user/user.index");
 
-  type Query {
-    test: Test
-  }
+const typeDef = gql`
+  type Query,
+  type Mutation
 `;
 
-const typeDefs = [typeDef];
+const typeDefs = [
+    typeDef,
+    userTypedefs,
+];
 
 let resolvers = {};
-resolvers = merge(resolvers);
+resolvers = merge(
+    resolvers,
+    userResolver,
+    );
 
 let authMiddleware = {};
 authMiddleware = merge(userAuthen);

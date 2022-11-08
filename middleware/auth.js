@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const UserModel = require('../user/user.model');
 
 const userAuth = async function (resolver, parent, ags, context){
     const token = context.req.get('Authorization');
@@ -19,6 +20,6 @@ const userAuth = async function (resolver, parent, ags, context){
 
 module.exports = {
     Query: {
-        test: userAuth
+        getAllUsers: userAuth
     },
 };
