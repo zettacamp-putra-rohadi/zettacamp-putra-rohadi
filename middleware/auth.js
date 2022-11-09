@@ -30,5 +30,6 @@ module.exports = {
         deleteUser: userAuth,
         createIngredient: userAuth,
         updateIngredient: userAuth,
+        deleteIngredient: userAuth,
     }
 };
