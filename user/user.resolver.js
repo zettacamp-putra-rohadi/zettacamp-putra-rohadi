@@ -86,7 +86,7 @@ const deleteUser = async (parent, {_id}, context) => {
 const getAllUsers = async (parent, {user_input}, context) => {
     let aggregate = [];
     
-    aggregate.push({$match: {status: {$ne: 'DELETED'}}});
+    aggregate.push({$match: {user_status: {$ne: 'DELETED'}}});
 
     user_input.first_name ? aggregate.push({$match: {first_name: user_input.first_name}}) : null;
     user_input.last_name ? aggregate.push({$match: {last_name: user_input.last_name}}) : null;
@@ -97,6 +97,9 @@ const getAllUsers = async (parent, {user_input}, context) => {
     try {
         const users = await UserModel.aggregate(aggregate);
         const total = users.length;
+        if(users.length == 0){
+            throw new Error('User tidak ditemukan');
+        }
         return {
             users,
             total
@@ -109,11 +112,16 @@ const getAllUsers = async (parent, {user_input}, context) => {
 const getOneUser = async (parent, {_id, email}, context) => {
     let aggregate = [];
 
+    aggregate.push({$match: {user_status: {$ne: 'DELETED'}}});
+
     _id ? aggregate.push({$match: {_id: mongoose.Types.ObjectId(_id)}}) : null;
     email ? aggregate.push({$match: {email: email}}) : null;
 
     try {
         const user = await UserModel.aggregate(aggregate);
+        if(user.length == 0){
+            throw new Error('User tidak ditemukan');
+        }
         return user[0];
     } catch (error) {
         throw new Error(error);
