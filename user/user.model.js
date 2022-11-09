@@ -12,10 +12,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    status : {
+    user_status : {
         type: String,
-        enum : ['active', 'deleted'],
-        default: 'active'
+        enum : ['ACTIVE', 'DELETED'],
+        default: 'ACTIVE'
     }
 }, {versionKey:false});
 

@@ -7,21 +7,32 @@ const typeDefs = gql`
         last_name : String!
         email : String!
         hashed_password : String!
-        status : String!
+        user_status : UserStatus
+    }
+
+    enum UserStatus{
+        ACTIVE
+        DELETED
     }
 
     type UsersResult{
-        _id : ID!
-        first_name : String!
-        last_name : String!
-        email : String!
-        status : String!
+        _id : ID
+        first_name : String
+        last_name : String
+        email : String
+    }
+
+    type UsersResultGetAll{
+        users : [UsersResult!]
+        total : Int
     }
 
     input UsersFilter{
         first_name : String
         last_name : String
         email : String
+        page : Int!
+        limit : Int!
     }
 
     type LoginUserResult{
@@ -35,6 +46,13 @@ const typeDefs = gql`
         email : String!
         password : String!
     }
+    
+    input UpdateUserInput{
+        first_name : String
+        last_name : String
+        email : String
+        password : String
+    }
 
     input UserLoginInput{
         email : String!
@@ -42,12 +60,15 @@ const typeDefs = gql`
     }
 
     type Query{
-        getAllUsers(user_input : UsersFilter) : [UsersResult]
+        getAllUsers(user_input : UsersFilter) : UsersResultGetAll
+        getOneUser(_id : ID, email: String) : UsersResult
     }
 
     type Mutation{
         createUser(user_input : UsersInput) : UsersResult
         loginUser(user_input : UserLoginInput) : LoginUserResult
+        updateUser(_id : ID!, user_input : UpdateUserInput) : UsersResult
+        deleteUser(_id : ID!) : UsersResult
     }
 
 `;

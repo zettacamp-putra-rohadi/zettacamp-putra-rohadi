@@ -20,6 +20,11 @@ const userAuth = async function (resolver, parent, ags, context){
 
 module.exports = {
     Query: {
-        getAllUsers: userAuth
+        getAllUsers: userAuth,
+        getOneUser: userAuth
     },
+    Mutation: {
+        updateUser: userAuth,
+        deleteUser: userAuth,
+    }
 };
