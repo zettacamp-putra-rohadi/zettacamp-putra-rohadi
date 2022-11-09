@@ -14,6 +14,7 @@ mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
 const userAuthen = require("./middleware/auth");
 
 const { userTypedefs, userResolver } = require("./user/user.index");
+const { ingredientTypeDefs, ingredientResolver } = require("./ingredient/ingredient.index");
 
 const typeDef = gql`
   type Query,
@@ -23,12 +24,14 @@ const typeDef = gql`
 const typeDefs = [
     typeDef,
     userTypedefs,
+    ingredientTypeDefs,
 ];
 
 let resolvers = {};
 resolvers = merge(
     resolvers,
     userResolver,
+    ingredientResolver,
     );
 
 let authMiddleware = {};
