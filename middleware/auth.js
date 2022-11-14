@@ -37,6 +37,7 @@ module.exports = {
         createRecipe: userAuth,
         updateRecipe: userAuth,
         deleteRecipe: userAuth,
+        updateRecipeStatus: userAuth,
         createTransaction: userAuth,
         deleteTransaction: userAuth,
     }

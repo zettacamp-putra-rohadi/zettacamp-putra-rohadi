@@ -1,9 +1,11 @@
 const recipeModel = require('./recipe.model');
 const mongoose = require('mongoose');
 
-const createRecipe = async (parent, {name, ingredients}, context) => {
+const createRecipe = async (parent, {name, picture, price, ingredients}, context) => {
     const newRecipe = new recipeModel({
         name,
+        picture,
+        price,
         ingredients,
         recipe_status: "ACTIVE"
     });
@@ -11,7 +13,7 @@ const createRecipe = async (parent, {name, ingredients}, context) => {
     return result;
 }
 
-const updateRecipe = async (parent, {_id, name, ingredients}, context) => {
+const updateRecipe = async (parent, {_id, name, picture, price, ingredients}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
     if(!recipe){
         throw new Error('Recipe tidak ditemukan');
@@ -19,10 +21,15 @@ const updateRecipe = async (parent, {_id, name, ingredients}, context) => {
     if(recipe.recipe_status === 'DELETED'){
         throw new Error('Recipe telah dihapus');
     }
-    const result = await recipeModel.findOneAndUpdate({_id: _id}, {
-        name: name,
-        ingredients: ingredients
-    }, {new: true});
+
+    let queryUpdate = {};
+    
+    name ? queryUpdate.name = name : null;
+    picture ? queryUpdate.picture = picture : null;
+    price ? queryUpdate.price = price : null;
+    ingredients ? queryUpdate.ingredients = ingredients : null;
+
+    const result = await recipeModel.findByIdAndUpdate(_id, queryUpdate, {new: true});
     return result;
 }
 
@@ -40,12 +47,35 @@ const deleteRecipe = async (parent, {_id}, context) => {
     return result;
 }
 
+const updateRecipeStatus = async (parent, {_id, recipe_status}, context) => {
+    const recipe = await recipeModel.findOne({_id: _id});
+    if(!recipe){
+        throw new Error('Recipe tidak ditemukan');
+    }
+    if(recipe_status === 'UNPUBLISH'){
+        const result = await recipeModel.findOneAndUpdate({_id: _id}, {
+            recipe_status: 'UNPUBLISH'
+        }, {new: true});
+        return result;
+    }
+    if(recipe_status === 'ACTIVE'){
+        const result = await recipeModel.findOneAndUpdate({_id: _id}, {
+            recipe_status: 'ACTIVE'
+        }, {new: true});
+        return result;
+    }
+}
+
+
 const getAllRecipes = async (parent, {filter}, context) => {
     //lebih dari satu match
     let aggregate = [];
+    let query = {$and: []};
 
-    aggregate.push({$match: {recipe_status: {$ne: 'DELETED'}}});
-    filter.recipe_name ? aggregate.push({$match: {name: new RegExp(filter.recipe_name, 'i')}}) : null;
+    query.$and.push({recipe_status: {$eq: 'ACTIVE'}});
+    filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
+
+    aggregate.push({$match: query});
     aggregate.push({$skip: filter.page * filter.limit});
     aggregate.push({$limit: filter.limit});
     try {
@@ -65,8 +95,12 @@ const getAllRecipes = async (parent, {filter}, context) => {
 
 const getOneRecipe = async (parent, {_id}, context) => {
     let aggregate = [];
-    aggregate.push({$match: {recipe_status: {$ne: 'DELETED'}}});
-    aggregate.push({$match: {_id: mongoose.Types.ObjectId(_id)}});
+    let query = {$and: []};
+
+    query.$and.push({recipe_status: {$ne: 'ACTIVE'}});
+    query.$and.push({_id: mongoose.Types.ObjectId(_id)});
+
+    aggregate.push({$match: query});
     try {
         const recipe = await recipeModel.aggregate(aggregate);
         if(recipe.length == 0){
@@ -91,7 +125,8 @@ module.exports = {
     Mutation : {
         createRecipe,
         updateRecipe,
-        deleteRecipe
+        deleteRecipe,
+        updateRecipeStatus,
     },
     ListIngredient :{
         ingredient_id: getIngredientLoader
