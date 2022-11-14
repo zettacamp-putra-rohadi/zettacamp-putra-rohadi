@@ -16,8 +16,11 @@ const userAuthen = require("./middleware/auth");
 const { userTypedefs, userResolver } = require("./user/user.index");
 const { ingredientTypeDefs, ingredientResolver } = require("./ingredient/ingredient.index");
 const { recipeTypeDefs, recipeResolver } = require("./recipe/recipe.index");
+const { transactionTypeDefs, transactionResolver } = require("./transaction/transaction.index");
 
 const ingredientListLoader = require("./recipe/recipe.loader");
+
+const {TransactionUserLoader, RecipeLoader} = require("./transaction/transaction.loader");
 
 const typeDef = gql`
   type Query,
@@ -29,6 +32,7 @@ const typeDefs = [
     userTypedefs,
     ingredientTypeDefs,
     recipeTypeDefs,
+    transactionTypeDefs
 ];
 
 let resolvers = {};
@@ -37,6 +41,7 @@ resolvers = merge(
     userResolver,
     ingredientResolver,
     recipeResolver,
+    transactionResolver
     );
 
 let authMiddleware = {};
@@ -58,6 +63,8 @@ const server = new ApolloServer({
       req: req;
       return {
           ingredientListLoader,
+          TransactionUserLoader,
+          RecipeLoader,
           req
       };
   },

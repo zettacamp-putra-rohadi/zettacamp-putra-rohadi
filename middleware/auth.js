@@ -25,6 +25,8 @@ module.exports = {
         getAllIngredients: userAuth,
         getOneIngredient: userAuth,
         getAllRecipes: userAuth,
+        getAllTransactions: userAuth,
+        getOneTransaction: userAuth,
     },
     Mutation: {
         updateUser: userAuth,
@@ -35,5 +37,7 @@ module.exports = {
         createRecipe: userAuth,
         updateRecipe: userAuth,
         deleteRecipe: userAuth,
+        createTransaction: userAuth,
+        deleteTransaction: userAuth,
     }
 };

@@ -42,7 +42,8 @@ const loginUser = async (parent, {user_input}, context) => {
     const token = jwt.sign({
         id: user._id, 
         email:user.email, 
-        password:user.hashed_password
+        first_name: user.first_name,
+        last_name: user.last_name
     }, 'secretbanget', {expiresIn: '1h'});
     return {
         id: user._id,
