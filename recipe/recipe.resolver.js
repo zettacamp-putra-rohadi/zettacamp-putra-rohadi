@@ -7,7 +7,7 @@ const createRecipe = async (parent, {name, picture, price, ingredients}, context
         picture,
         price,
         ingredients,
-        recipe_status: "ACTIVE"
+        recipe_status: "UNPUBLISH"
     });
     const result = await newRecipe.save();
     return result;
@@ -72,7 +72,7 @@ const getAllRecipes = async (parent, {filter}, context) => {
     let aggregate = [];
     let query = {$and: []};
 
-    query.$and.push({recipe_status: {$eq: 'ACTIVE'}});
+    query.$and.push({recipe_status: {$ne: 'DELETED'}});
     filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
 
     aggregate.push({$match: query});
@@ -97,7 +97,7 @@ const getOneRecipe = async (parent, {_id}, context) => {
     let aggregate = [];
     let query = {$and: []};
 
-    query.$and.push({recipe_status: {$ne: 'ACTIVE'}});
+    query.$and.push({recipe_status: {$ne: 'DELETED'}});
     query.$and.push({_id: mongoose.Types.ObjectId(_id)});
 
     aggregate.push({$match: query});

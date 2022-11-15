@@ -11,7 +11,7 @@ const recipeSchema = new mongoose.Schema({
     recipe_status: {
         type: String,
         enum: ["ACTIVE", "UNPUBLISH", "DELETED"],
-        default: "ACTIVE"
+        default: "UNPUBLISH"
     }
 });
 
