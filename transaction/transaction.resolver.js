@@ -21,7 +21,7 @@ const createTransaction = async (parent, {menu_input}, context) => {
         } else {
             console.log('stock tidak cukup');
             const newTransaction = new transactionModel({
-                user_id,
+                user_id : userId,
                 menu : menu_input,
                 order_status: 'FAILED',
                 order_date: Date.now(),
@@ -162,15 +162,22 @@ const getAllTransactions = async (parent, {filter}, context) => {
 }
 
 const getOneTransaction = async (parent, {id}, context) => {
+    let aggregate = [];
+    let query = {$and: []};
+
+    query.$and.push({transaction_status : 'ACTIVE'});
+    query.$and.push({_id: mongoose.Types.ObjectId(id)});
+    aggregate.push({$match: query});
+
     try {
-        const transaction = await transactionModel.findById(id);
+        const transaction = await transactionModel.aggregate(aggregate);
         if(!transaction){
             throw new Error('Transaction tidak ditemukan');
         }
         if(transaction.transaction_status == 'DELETED'){
             throw new Error('Transaction telah dihapus');
         }
-        return transaction;
+        return transaction[0];
     } catch (error) {
         throw new Error(error);
     }

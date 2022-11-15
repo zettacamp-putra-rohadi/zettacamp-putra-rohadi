@@ -3,7 +3,7 @@ const {ApollowServe, gql} = require('apollo-server-express');
 const typeDefs = gql`
 scalar Date
     type Transaction{
-        _id: ID!
+        _id: ID
         user_id: Users
         menu: [Menu]
         order_status: OrderStatus
