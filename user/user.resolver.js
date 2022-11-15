@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 
 const createUser = async function (parent, {user_input}, context){
-    console.log(user_input);
+    // console.log(user_input);
     const user = await UserModel.findOne({email: user_input.email});
     if(user && user.user_status === 'ACTIVE'){
         throw new Error('Email telah digunakan');

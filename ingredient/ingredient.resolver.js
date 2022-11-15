@@ -55,12 +55,14 @@ const deleteIngredient = async (parent, {_id}, context) => {
 
 const getAllIngredients = async (parent, {filter}, context) => {
     let aggregate = [];
+    let query = {$and: []};
 
-    aggregate.push({$match: {ingredient_status: {$ne: 'DELETED'}}});
+    query.$and.push({ingredient_status: {$eq: 'ACTIVE'}});
     
-    filter.stock ? aggregate.push({$match: {stock: {$gte: filter.stock}}}) : aggregate.push({$match: {stock : {$gt: 0}}});
-    filter.name ? aggregate.push({$match: {name: filter.name}}) : null;
+    filter.name ? query.$and.push({name: filter.name}) : null;
+    filter.stock ? query.$and.push({stock: {$gte: filter.stock}}) : aggregate.push({stock : {$gt: 0}});
 
+    aggregate.push({$match: query});
     aggregate.push({$skip: filter.page * filter.limit});
     aggregate.push({$limit: filter.limit});
     
@@ -81,8 +83,9 @@ const getAllIngredients = async (parent, {filter}, context) => {
 
 const getOneIngredient = async (parent, {_id}, context) => {
     let aggregate = [];
-    aggregate.push({$match: {ingredient_status: {$ne: 'DELETED'}}});
-    aggregate.push({$match: {_id: mongoose.Types.ObjectId(_id)}});
+    let query= {$and: []};
+    query.$and.push({ingredient_status: {$eq: 'ACTIVE'}});
+    query.$and.push({_id: mongoose.Types.ObjectId(_id)});
     try {
         const ingredient = await ingredientModel.aggregate(aggregate);
         if(ingredient.length == 0){
