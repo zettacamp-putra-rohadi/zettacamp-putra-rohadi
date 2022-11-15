@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 
 const createUser = async function (parent, {user_input}, context){
+    console.log(user_input);
     const user = await UserModel.findOne({email: user_input.email});
     if(user && user.user_status === 'ACTIVE'){
         throw new Error('Email telah digunakan');
@@ -21,7 +22,8 @@ const createUser = async function (parent, {user_input}, context){
         last_name: user_input.last_name,
         email: user_input.email,
         hashed_password: hashed_password,
-        user_status: user_input.status
+        user_status: user_input.status,
+        user_type : user_input.user_type
     });
     const result = await newUser.save();
     return result;
@@ -46,7 +48,6 @@ const loginUser = async (parent, {user_input}, context) => {
         last_name: user.last_name
     }, 'secretbanget', {expiresIn: '1h'});
     return {
-        id: user._id,
         email: user.email,
         token: token
     }
@@ -69,6 +70,7 @@ const updateUser = async (parent, {_id, user_input}, context) => {
     user_input.first_name ? queryUpdate.first_name = user_input.first_name : null;
     user_input.last_name ? queryUpdate.last_name = user_input.last_name : null;
     user_input.email ? queryUpdate.email = user_input.email : null;
+    user_input.user_type ? queryUpdate.user_type = user_input.user_type : null;
 
     const result = await UserModel.findByIdAndUpdate(_id, queryUpdate, {new: true});
     return result;
@@ -86,13 +88,15 @@ const deleteUser = async (parent, {_id}, context) => {
 
 const getAllUsers = async (parent, {user_input}, context) => {
     let aggregate = [];
+    let query = {$and: []};
     
-    aggregate.push({$match: {user_status: {$ne: 'DELETED'}}});
+    query.$and.push({user_status: {$eq: 'ACTIVE'}});
 
-    user_input.first_name ? aggregate.push({$match: {first_name: user_input.first_name}}) : null;
-    user_input.last_name ? aggregate.push({$match: {last_name: user_input.last_name}}) : null;
-    user_input.email ? aggregate.push({$match: {email: user_input.email}}) : null;
+    user_input.first_name ? query.$and.push({first_name: user_input.first_name}) : null;
+    user_input.last_name ? query.$and.push({last_name: user_input.last_name}) : null;
+    user_input.email ? query.$and.push({email: user_input.email}) : null;
     
+    aggregate.push({$match: query});
     aggregate.push({$skip: user_input.page * user_input.limit});
     aggregate.push({$limit: user_input.limit});
     try {
@@ -112,12 +116,13 @@ const getAllUsers = async (parent, {user_input}, context) => {
 
 const getOneUser = async (parent, {_id, email}, context) => {
     let aggregate = [];
+    let query = {$and: []};
 
-    aggregate.push({$match: {user_status: {$ne: 'DELETED'}}});
+    query.$and.push({user_status: {$ne: 'DELETED'}});
 
-    _id ? aggregate.push({$match: {_id: mongoose.Types.ObjectId(_id)}}) : null;
-    email ? aggregate.push({$match: {email: email}}) : null;
-
+    _id ? query.$and.push({_id: mongoose.Types.ObjectId(_id)}) : null;
+    email ? query.$and.push({email: email}) : null;
+    aggregate.push({$match: query});
     try {
         const user = await UserModel.aggregate(aggregate);
         if(user.length == 0){

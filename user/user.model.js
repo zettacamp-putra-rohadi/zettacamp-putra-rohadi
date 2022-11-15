@@ -16,7 +16,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum : ['ACTIVE', 'DELETED'],
         default: 'ACTIVE'
-    }
+    },
+    user_type : {
+        user_type_name : String,
+        user_type_permission: [{
+            name : String,
+            view : Boolean,
+        }]  
+    },
 }, {versionKey:false});
 
 module.exports = mongoose.model("users", userSchema);

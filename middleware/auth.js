@@ -8,7 +8,10 @@ const userAuth = async function (resolver, parent, ags, context){
     }
     try{
         const user = await jwt.verify(token, 'secretbanget');
-        const getUser = await UserModel.findOne({email: user.email});
+        const getUser = await UserModel.aggregate([
+                            { $match :{email: user.email} },
+                            { $project : {hashed_password: 0} }
+                        ]);
         context.user = getUser;
         context.token = token;
         return resolver();

@@ -8,6 +8,7 @@ const typeDefs = gql`
         email : String!
         hashed_password : String!
         user_status : UserStatus
+        user_type : UserType
     }
 
     enum UserStatus{
@@ -15,11 +16,23 @@ const typeDefs = gql`
         DELETED
     }
 
+    type UserType{
+        user_type_name : String!
+        user_type_permission : [UserTypePermission]
+    }
+
+    type UserTypePermission{
+        name : String!
+        view : Boolean!
+    }
+
     type UsersResult{
         _id : ID
         first_name : String
         last_name : String
         email : String
+        user_status : UserStatus
+        user_type : UserType
     }
 
     type UsersResultGetAll{
@@ -45,6 +58,17 @@ const typeDefs = gql`
         last_name : String!
         email : String!
         password : String!
+        user_type : InputUserType
+    }
+
+    input InputUserType{
+        user_type_name : String!
+        user_type_permission : [InputUserTypePermission]
+    }
+
+    input InputUserTypePermission{
+        name : String!
+        view : Boolean!
     }
     
     input UpdateUserInput{
@@ -52,6 +76,7 @@ const typeDefs = gql`
         last_name : String
         email : String
         password : String
+        user_type : InputUserType
     }
 
     input UserLoginInput{
