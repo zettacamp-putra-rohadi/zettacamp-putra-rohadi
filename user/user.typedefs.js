@@ -58,7 +58,7 @@ const typeDefs = gql`
         last_name : String!
         email : String!
         password : String!
-        user_type : InputUserType
+        user_type : InputUserType!
     }
 
     input InputUserType{

@@ -47,7 +47,7 @@ const loginUser = async (parent, {user_input}, context) => {
         email:user[0].email, 
         first_name: user[0].first_name,
         last_name: user[0].last_name
-    }, 'secretbanget', {expiresIn: '1h'});
+    }, 'secretbanget', {expiresIn: '5h'});
     return {
         user: user[0],
         token: token

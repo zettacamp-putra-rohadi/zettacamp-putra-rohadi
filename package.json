@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "<!--\r **zettacamp-putra-rohadi/zettacamp-putra-rohadi** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +15,7 @@
   "dependencies": {
     "apollo-server-express": "^3.6.7",
     "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "dataloader": "^2.1.0",
     "express": "^4.18.2",
     "graphql-middleware": "^6.1.25",

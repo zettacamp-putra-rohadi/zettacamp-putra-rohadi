@@ -60,8 +60,14 @@ const getAllIngredients = async (parent, {filter}, context) => {
     query.$and.push({ingredient_status: {$eq: 'ACTIVE'}});
     
     filter.name ? query.$and.push({name: filter.name}) : null;
-    filter.stock ? query.$and.push({stock: {$gte: filter.stock}}) : aggregate.push({stock : {$gt: 0}});
 
+    if (filter.stock) {
+        if (filter.stock > 0) {
+            query.$and.push({stock: {$gte: filter.stock}});
+        } else {
+            throw new Error('Stock harus lebih dari 0');
+        }
+    }
     aggregate.push({$match: query});
     aggregate.push({$skip: filter.page * filter.limit});
     aggregate.push({$limit: filter.limit});
@@ -86,6 +92,7 @@ const getOneIngredient = async (parent, {_id}, context) => {
     let query= {$and: []};
     query.$and.push({ingredient_status: {$eq: 'ACTIVE'}});
     query.$and.push({_id: mongoose.Types.ObjectId(_id)});
+    aggregate.push({$match: query});
     try {
         const ingredient = await ingredientModel.aggregate(aggregate);
         if(ingredient.length == 0){
