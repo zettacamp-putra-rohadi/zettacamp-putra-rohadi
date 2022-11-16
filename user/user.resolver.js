@@ -30,25 +30,26 @@ const createUser = async function (parent, {user_input}, context){
 }
 
 const loginUser = async (parent, {user_input}, context) => {
-    const user = await UserModel.findOne({email: user_input.email});
+    // const user = await UserModel.findOne({email: user_input.email});
+    const user = await UserModel.aggregate([{$match: {$and:[{email : user_input.email},{user_status : "ACTIVE"}]}}]);
     if(!user){
         throw new Error('Email tidak ditemukan');
     }
-    if(user.user_status == 'DELETED'){
+    if(user[0].user_status == 'DELETED'){
         throw new Error('Email telah dihapus, silahkan daftar kembali');
     }
-    const isPasswordValid = await bcrypt.compare(user_input.password, user.hashed_password);
+    const isPasswordValid = await bcrypt.compare(user_input.password, user[0].hashed_password);
     if(!isPasswordValid){
         throw new Error('Password salah');
     }
     const token = jwt.sign({
-        id: user._id, 
-        email:user.email, 
-        first_name: user.first_name,
-        last_name: user.last_name
+        id: user[0]._id, 
+        email:user[0].email, 
+        first_name: user[0].first_name,
+        last_name: user[0].last_name
     }, 'secretbanget', {expiresIn: '1h'});
     return {
-        email: user.email,
+        user: user[0],
         token: token
     }
 }

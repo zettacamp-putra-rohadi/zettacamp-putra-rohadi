@@ -49,7 +49,7 @@ const typeDefs = gql`
     }
 
     type LoginUserResult{
-        email : String!
+        user : UsersResult
         token : String!
     }
 
