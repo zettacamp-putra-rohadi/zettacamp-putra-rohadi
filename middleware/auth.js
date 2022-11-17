@@ -9,6 +9,7 @@ const userAuth = async function (resolver, parent, ags, context){
     try{
         const user = await jwt.verify(token, 'secretbanget');
         context.user_id = user.id;
+        context.role = user.role;
         context.token = token;
         return resolver();
     }catch(err){
@@ -24,6 +25,7 @@ module.exports = {
         getAllIngredients: userAuth,
         getOneIngredient: userAuth,
         getAllRecipes: userAuth,
+        getOneRecipe: userAuth,
         getAllTransactions: userAuth,
         getOneTransaction: userAuth,
         getAllCarts: userAuth,

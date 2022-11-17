@@ -17,13 +17,15 @@ const userSchema = new mongoose.Schema({
         enum : ['ACTIVE', 'DELETED'],
         default: 'ACTIVE'
     },
-    user_type : {
-        user_type_name : String,
-        user_type_permission: [{
-            name : String,
-            view : Boolean,
-        }]  
-    },
-}, {versionKey:false});
+    role: {
+        type: String,
+        enum: ['ADMIN', 'USER'],
+        default: 'USER'
+    }, 
+    user_type: [{
+        name: String,
+        view: Boolean
+    }]
+}, {versionKey:false},{timestamps: true});
 
 module.exports = mongoose.model("users", userSchema);

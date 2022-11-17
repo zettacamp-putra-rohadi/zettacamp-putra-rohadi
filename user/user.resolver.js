@@ -5,7 +5,61 @@ const mongoose = require('mongoose');
 
 
 const createUser = async function (parent, {user_input}, context){
-    // console.log(user_input);
+    let permission = [];
+    const permissionAdmin = [
+        {
+            name: "homepage",
+            view: true
+        },{
+            name: "login",
+            view: true
+        },{
+            name: "menu",
+            view: true
+        },{
+            name: "cart",
+            view: true
+        },{
+            name: "about",
+            view: true
+        },{
+            name: "stock_management",
+            view: true
+        },{
+            name: "menu_management",
+            view: true
+        }
+    ];
+
+    const permissionUser = [{
+        name: "homepage",
+        view: true
+    },{
+        name: "login",
+        view: true
+    },{
+        name: "menu",
+        view: true
+    },{
+        name: "cart",
+        view: true
+    },{
+        name: "about",
+        view: true
+    },{
+        name: "stock_management",
+        view: false
+    },{
+        name: "menu_management",
+        view: false
+    }];
+
+    if(user_input.role === 'ADMIN'){
+        permission = permissionAdmin;
+    }else{
+        permission = permissionUser;
+    }
+
     const user = await UserModel.findOne({email: user_input.email});
     if(user && user.user_status === 'ACTIVE'){
         throw new Error('Email telah digunakan');
@@ -23,14 +77,14 @@ const createUser = async function (parent, {user_input}, context){
         email: user_input.email,
         hashed_password: hashed_password,
         user_status: user_input.status,
-        user_type : user_input.user_type
+        role : user_input.role,
+        user_type : permission
     });
     const result = await newUser.save();
     return result;
 }
 
 const loginUser = async (parent, {user_input}, context) => {
-    // const user = await UserModel.findOne({email: user_input.email});
     const user = await UserModel.aggregate([{$match: {$and:[{email : user_input.email},{user_status : "ACTIVE"}]}}]);
     if(!user){
         throw new Error('Email tidak ditemukan');
@@ -46,8 +100,9 @@ const loginUser = async (parent, {user_input}, context) => {
         id: user[0]._id, 
         email:user[0].email, 
         first_name: user[0].first_name,
-        last_name: user[0].last_name
-    }, 'secretbanget', {expiresIn: '5h'});
+        last_name: user[0].last_name,
+        role : user[0].role,
+    }, 'secretbanget', {expiresIn: '1d'});
     return {
         user: user[0],
         token: token

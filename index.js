@@ -12,6 +12,7 @@ const mongodb = "mongodb://localhost:27017/mini_project_putra";
 mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const userAuthen = require("./middleware/auth");
+const verifRole = require("./middleware/role");
 
 const { userTypedefs, userResolver } = require("./user/user.index");
 const { ingredientTypeDefs, ingredientResolver } = require("./ingredient/ingredient.index");
@@ -50,11 +51,14 @@ resolvers = merge(
 let authMiddleware = {};
 authMiddleware = merge(userAuthen);
 
+let roleMiddleware = {};
+roleMiddleware = merge(verifRole);
+
 const executableSchema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
-const protectedSchema = applyMiddleware(executableSchema, authMiddleware);
+const protectedSchema = applyMiddleware(executableSchema, authMiddleware, roleMiddleware);
 
 const server = new ApolloServer({
   schema: protectedSchema,
