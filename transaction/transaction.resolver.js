@@ -1,6 +1,7 @@
 const transactionModel = require('./transaction.model');
 const recipeModel = require('../recipe/recipe.model');
 const ingredientModel = require('../ingredient/ingredient.model');
+const cartModel = require('../cart/cart.model');
 const mongoose = require('mongoose');
 
 const createTransaction = async (parent, {menu_input}, context) => {
@@ -17,6 +18,10 @@ const createTransaction = async (parent, {menu_input}, context) => {
                 transaction_status: 'ACTIVE'
             });
             const result = await newTransaction.save();
+            //delete cart with userid
+            const deleteCard = await cartModel.updateMany({user_id: userId}, {
+                cart_status: 'DELETED'
+            });
             return result;
         } else {
             console.log('stock tidak cukup');

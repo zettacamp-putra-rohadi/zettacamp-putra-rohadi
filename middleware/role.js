@@ -13,8 +13,8 @@ module.exports = {
         getOneIngredient: verifRole,
         // getAllRecipes: verifRole,
         // getOneRecipes: verifRole,
-        getAllTransactions: verifRole,
-        getOneTransaction: verifRole,
+        // getAllTransactions: verifRole,
+        // getOneTransaction: verifRole,
     },
     Mutation: {
         updateUser: verifRole,
@@ -26,7 +26,7 @@ module.exports = {
         updateRecipe: verifRole,
         deleteRecipe: verifRole,
         updateRecipeStatus: verifRole,
-        createTransaction: verifRole,
+        // createTransaction: verifRole,
         deleteTransaction: verifRole,
     }
 };
