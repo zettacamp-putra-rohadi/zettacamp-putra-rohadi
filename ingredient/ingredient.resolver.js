@@ -1,4 +1,5 @@
 const ingredientModel = require('./ingredient.model');
+const recipeModel = require('../recipe/recipe.model');
 const mongoose = require('mongoose');
 
 const createIngredient = async (parent, {name, stock}, context) => {
@@ -41,11 +42,15 @@ const updateIngredient = async (parent, {_id, stock}, context) => {
 
 const deleteIngredient = async (parent, {_id}, context) => {
     const ingredient = await ingredientModel.findOne({_id: _id});
+    const checkRecipe = await recipeModel.find({ingredients: {$elemMatch: {ingredient_id: _id}}},{recipe_status:'ACTIVE'});
     if(!ingredient){
         throw new Error('Ingredient tidak ditemukan');
     }
     if(ingredient.ingredient_status === 'DELETED'){
         throw new Error('Ingredient telah dihapus');
+    }
+    if(checkRecipe.length > 0){
+        throw new Error('Ingredient masih digunakan di resep');
     }
     const result = await ingredientModel.findOneAndUpdate({_id: _id}, {
         ingredient_status: 'DELETED'
