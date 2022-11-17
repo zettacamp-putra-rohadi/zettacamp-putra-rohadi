@@ -1,15 +1,27 @@
+// populate environment variables
+const dotenv = require('dotenv').config();
+
 const express = require("express");
 const { merge } = require("lodash");
 const { ApolloServer, gql } = require("apollo-server-express");
 const { applyMiddleware } = require("graphql-middleware");
 const { makeExecutableSchema } = require("graphql-tools");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
-const mongodb = "mongodb://localhost:27017/mini_project_putra";
-mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
+// dont forget to enable cors wkwk
+// so i can access it from frontend
+const cors = require('cors');
+app.use(cors());
+
+// using mongodb atlas instead, for testing purpose wkwk
+const db = require('./db');
+db.connect();
+
+// const mongodb = "mongodb://localhost:27017/mini_project_putra";
+// mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const userAuthen = require("./middleware/auth");
 
@@ -74,10 +86,8 @@ const server = new ApolloServer({
 });
 
 server.start().then((res) => {
-  server.applyMiddleware({
-    app,
-  });
-  // run port
+  server.applyMiddleware({ app });
+
   app.listen(port, () => {
     console.log(`App running in port ${port}`);
   });
