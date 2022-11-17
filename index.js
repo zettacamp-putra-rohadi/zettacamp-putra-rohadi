@@ -17,6 +17,7 @@ const { userTypedefs, userResolver } = require("./user/user.index");
 const { ingredientTypeDefs, ingredientResolver } = require("./ingredient/ingredient.index");
 const { recipeTypeDefs, recipeResolver } = require("./recipe/recipe.index");
 const { transactionTypeDefs, transactionResolver } = require("./transaction/transaction.index");
+const { cartTypeDefs, cartResolver } = require("./cart/cart.index");
 
 const ingredientListLoader = require("./recipe/recipe.loader");
 
@@ -32,7 +33,8 @@ const typeDefs = [
     userTypedefs,
     ingredientTypeDefs,
     recipeTypeDefs,
-    transactionTypeDefs
+    transactionTypeDefs,
+    cartTypeDefs
 ];
 
 let resolvers = {};
@@ -41,7 +43,8 @@ resolvers = merge(
     userResolver,
     ingredientResolver,
     recipeResolver,
-    transactionResolver
+    transactionResolver,
+    cartResolver
     );
 
 let authMiddleware = {};

@@ -8,11 +8,7 @@ const userAuth = async function (resolver, parent, ags, context){
     }
     try{
         const user = await jwt.verify(token, 'secretbanget');
-        const getUser = await UserModel.aggregate([
-                            { $match :{email: user.email} },
-                            { $project : {hashed_password: 0} }
-                        ]);
-        context.user = getUser;
+        context.user_id = user.id;
         context.token = token;
         return resolver();
     }catch(err){
@@ -30,6 +26,8 @@ module.exports = {
         getAllRecipes: userAuth,
         getAllTransactions: userAuth,
         getOneTransaction: userAuth,
+        getAllCarts: userAuth,
+        getOneCart: userAuth,
     },
     Mutation: {
         updateUser: userAuth,
@@ -43,5 +41,8 @@ module.exports = {
         updateRecipeStatus: userAuth,
         createTransaction: userAuth,
         deleteTransaction: userAuth,
+        createCart: userAuth,
+        updateCart: userAuth,
+        deleteCart: userAuth,
     }
 };

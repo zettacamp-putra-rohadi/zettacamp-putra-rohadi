@@ -84,6 +84,7 @@ const getAllRecipes = async (parent, {filter}, context) => {
         if(recipes.length == 0){
             throw new Error('Recipe tidak ditemukan');
         }
+        // let listRecipes = calculateAvailableStock(recipes);
         return {
             listRecipe: recipes,
             total
@@ -110,6 +111,29 @@ const getOneRecipe = async (parent, {_id}, context) => {
     } catch (error) {
         throw new Error(error);
     }
+}
+
+function calculateAvailableStock(listRecipe){
+    // console.log(listRecipe[0].ingredients);
+    let calAvailableStock = [];
+    ingredients.forEach((recipe) => {
+    var prevCalculate = 0;
+    recipe.ingredients.forEach((ingredient) => {
+        var calculateStock = Math.floor(
+        (ingredient.ingredient_id.stock /= ingredient.stock_used)
+        );
+        if (prevCalculate !== 0) {
+            if (calculateStock < prevCalculate) {
+                prevCalculate = calculateStock;
+            }
+        } else {
+            prevCalculate = calculateStock;
+        }
+    });
+    calAvailableStock.push({ recipeId: recipe._id, stock_terkecil: prevCalculate });
+    recipe.availableStock = prevCalculate;
+    });
+    return listRecipe;
 }
 
 const getIngredientLoader = async function (parent, args, context) {

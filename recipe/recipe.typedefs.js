@@ -10,8 +10,18 @@ const typeDefs = gql`
         recipe_status: recipeStatus
     }
 
+    type GetRecipe {
+        _id: ID
+        name: String
+        picture: String
+        price: Float
+        ingredients: [ListIngredient]
+        recipe_status: recipeStatus
+        availableStock : Int
+    }
+
     type RecipesResult{
-        listRecipe: [Recipe]
+        listRecipe: [GetRecipe]
         total: Int
     }
 
@@ -44,7 +54,7 @@ const typeDefs = gql`
 
     type Query {
         getAllRecipes(filter: filterRecipe): RecipesResult
-        getOneRecipe(_id: ID!): Recipe
+        getOneRecipe(_id: ID!): GetRecipe
     }
 
     type Mutation {

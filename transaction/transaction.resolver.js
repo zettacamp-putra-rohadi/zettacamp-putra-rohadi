@@ -4,7 +4,7 @@ const ingredientModel = require('../ingredient/ingredient.model');
 const mongoose = require('mongoose');
 
 const createTransaction = async (parent, {menu_input}, context) => {
-    const userId = context.user._id;
+    const userId = context.user_id;
     try {
         const isStock = await validateStockIngredient(menu_input);
         if (isStock) {
