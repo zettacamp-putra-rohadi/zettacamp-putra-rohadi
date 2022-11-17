@@ -44,7 +44,7 @@ const deleteCart = async (parent, {_id}, context) => {
 const getAllCarts = async (parent, {_id}, context) => {
     let aggregate = [];
     let query = {$and: []};
-
+    //user id dr token
     query.$and.push({cart_status: {$eq: 'ACTIVE'}});
     query.$and.push({user_id: mongoose.Types.ObjectId(_id)});
     aggregate.push({$match: query});

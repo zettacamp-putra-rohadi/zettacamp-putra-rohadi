@@ -1,4 +1,5 @@
 const recipeModel = require('./recipe.model');
+const ingredientModel = require('../ingredient/ingredient.model');
 const mongoose = require('mongoose');
 
 const createRecipe = async (parent, {name, picture, price, ingredients}, context) => {
@@ -41,6 +42,9 @@ const deleteRecipe = async (parent, {_id}, context) => {
     if(recipe.recipe_status === 'DELETED'){
         throw new Error('Recipe telah dihapus');
     }
+    if(recipe.recipe_status === 'ACTIVE'){
+        throw new Error('Recipe masih digunakan');
+    }
     const result = await recipeModel.findOneAndUpdate({_id: _id}, {
         recipe_status: 'DELETED'
     }, {new: true});
@@ -68,7 +72,6 @@ const updateRecipeStatus = async (parent, {_id, recipe_status}, context) => {
 
 
 const getAllRecipes = async (parent, {filter}, context) => {
-    //lebih dari satu match
     let aggregate = [];
     let query = {$and: []};
 
@@ -84,7 +87,6 @@ const getAllRecipes = async (parent, {filter}, context) => {
         if(recipes.length == 0){
             throw new Error('Recipe tidak ditemukan');
         }
-        // let listRecipes = calculateAvailableStock(recipes);
         return {
             listRecipe: recipes,
             total
@@ -114,11 +116,8 @@ const getOneRecipe = async (parent, {_id}, context) => {
 }
 
 function calculateAvailableStock(listRecipe){
-    // console.log(listRecipe[0].ingredients);
-    let calAvailableStock = [];
-    ingredients.forEach((recipe) => {
     var prevCalculate = 0;
-    recipe.ingredients.forEach((ingredient) => {
+    listRecipe.ingredients.forEach((ingredient) => {
         var calculateStock = Math.floor(
         (ingredient.ingredient_id.stock /= ingredient.stock_used)
         );
@@ -130,15 +129,21 @@ function calculateAvailableStock(listRecipe){
             prevCalculate = calculateStock;
         }
     });
-    calAvailableStock.push({ recipeId: recipe._id, stock_terkecil: prevCalculate });
-    recipe.availableStock = prevCalculate;
-    });
-    return listRecipe;
+    return prevCalculate;
 }
 
 const getIngredientLoader = async function (parent, args, context) {
     if (parent.ingredient_id) {
         return await context.ingredientListLoader.load(parent.ingredient_id);}
+};
+
+const getAvailableStock = async function (parent, args, context) {
+    let availableStock = [];
+    for (rec of parent.ingredients) {
+        const ingredient = await ingredientModel.findById(rec.ingredient_id);
+        availableStock.push(Math.floor(ingredient.stock / rec.stock_used));
+    }
+    return Math.min(...availableStock);;
 };
 
 module.exports = {
@@ -154,5 +159,8 @@ module.exports = {
     },
     ListIngredient :{
         ingredient_id: getIngredientLoader
+    },
+    GetRecipe: {
+        availableStock : getAvailableStock
     }
 }
