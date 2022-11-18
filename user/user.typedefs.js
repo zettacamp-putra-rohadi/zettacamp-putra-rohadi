@@ -34,7 +34,7 @@ const typeDefs = gql`
         email : String
         user_status : UserStatus
         role : RoleUser
-        user_type : UserType
+        user_type : [UserType]
     }
 
     type UsersResultGetAll{
