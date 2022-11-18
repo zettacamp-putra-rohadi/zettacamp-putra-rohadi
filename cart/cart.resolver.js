@@ -41,13 +41,27 @@ const deleteCart = async (parent, {_id}, context) => {
     return result;
 }
 
-const getAllCarts = async (parent, {_id}, context) => {
+const getAllCarts = async (parent, {page, limit}, context) => {
     let aggregate = [];
     let query = {$and: []};
     //user id dr token
     query.$and.push({cart_status: {$eq: 'ACTIVE'}});
-    query.$and.push({user_id: mongoose.Types.ObjectId(_id)});
+    if (context.role === 'USER') {
+        query.$and.push({user_id: context.user_id});
+    }
     aggregate.push({$match: query});
+    
+    if (page !== null) { 
+        aggregate.push({$skip: page * limit});
+    } else {
+        throw new Error('Page harus diisi');
+    }
+
+    if (limit !== null && limit > 0) {
+        aggregate.push({$limit: limit});
+    } else {
+        throw new Error('limit harus diisi dan lebih dari 0');
+    }
     try {
         const carts = await cartModel.aggregate(aggregate);
         if(carts.length == 0){

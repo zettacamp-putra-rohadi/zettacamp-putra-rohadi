@@ -74,13 +74,32 @@ const updateRecipeStatus = async (parent, {_id, recipe_status}, context) => {
 const getAllRecipes = async (parent, {filter}, context) => {
     let aggregate = [];
     let query = {$and: []};
+    
+    if (context.role === 'USER') {
+        query.$and.push({recipe_status: 'ACTIVE'});
+    } else {
+        if (filter.recipe_status) {
+            query.$and.push({recipe_status: filter.recipe_status});
+        }
+        query.$and.push({recipe_status: {$ne: 'DELETED'}});
+    }
 
-    query.$and.push({recipe_status: {$ne: 'DELETED'}});
     filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
 
     aggregate.push({$match: query});
-    aggregate.push({$skip: filter.page * filter.limit});
-    aggregate.push({$limit: filter.limit});
+    
+    if (filter.page !== null) { 
+        aggregate.push({$skip: filter.page * filter.limit});
+    } else {
+        throw new Error('Page harus diisi');
+    }
+
+    if (filter.limit !== null && filter.limit > 0) {
+        aggregate.push({$limit: filter.limit});
+    } else {
+        throw new Error('limit harus diisi dan lebih dari 0');
+    }
+
     try {
         const recipes = await recipeModel.aggregate(aggregate);
         const total = recipes.length;
@@ -100,7 +119,12 @@ const getOneRecipe = async (parent, {_id}, context) => {
     let aggregate = [];
     let query = {$and: []};
 
-    query.$and.push({recipe_status: {$ne: 'DELETED'}});
+    if (context.role === 'USER') {
+        query.$and.push({recipe_status: 'ACTIVE'});
+    } else {
+        query.$and.push({recipe_status: {$ne: 'DELETED'}});
+    }
+
     query.$and.push({_id: mongoose.Types.ObjectId(_id)});
 
     aggregate.push({$match: query});
@@ -113,23 +137,6 @@ const getOneRecipe = async (parent, {_id}, context) => {
     } catch (error) {
         throw new Error(error);
     }
-}
-
-function calculateAvailableStock(listRecipe){
-    var prevCalculate = 0;
-    listRecipe.ingredients.forEach((ingredient) => {
-        var calculateStock = Math.floor(
-        (ingredient.ingredient_id.stock /= ingredient.stock_used)
-        );
-        if (prevCalculate !== 0) {
-            if (calculateStock < prevCalculate) {
-                prevCalculate = calculateStock;
-            }
-        } else {
-            prevCalculate = calculateStock;
-        }
-    });
-    return prevCalculate;
 }
 
 const getIngredientLoader = async function (parent, args, context) {

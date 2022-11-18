@@ -153,8 +153,19 @@ const getAllUsers = async (parent, {user_input}, context) => {
     user_input.email ? query.$and.push({email: user_input.email}) : null;
     
     aggregate.push({$match: query});
-    aggregate.push({$skip: user_input.page * user_input.limit});
-    aggregate.push({$limit: user_input.limit});
+    
+    if (unser_input.page !== null) { 
+        aggregate.push({$skip: unser_input.page * unser_input.limit});
+    } else {
+        throw new Error('Page harus diisi');
+    }
+
+    if (unser_input.limit !== null && unser_input.limit > 0) {
+        aggregate.push({$limit: unser_input.limit});
+    } else {
+        throw new Error('limit harus diisi dan lebih dari 0');
+    }
+
     try {
         const users = await UserModel.aggregate(aggregate);
         const total = users.length;

@@ -40,16 +40,6 @@ const createTransaction = async (parent, {menu_input}, context) => {
     }
 }
 
-// async function testtest() {
-//     const result = await validateStockIngredient([
-//         {recipe_id: "636db322d912580e84cc209f", amount: 20},
-//         {recipe_id: "636db322d912580e84cc209f", amount: 0}
-//     ]);
-//     console.log(result);
-// }
-
-// testtest();
-
 async function validateStockIngredient(recipe_input) {
     let ingredientsUsed = [];
     let isStock = true;
@@ -148,8 +138,17 @@ const getAllTransactions = async (parent, {filter}, context) => {
         aggregate.push({$match: query});
     }
 
-    aggregate.push({$skip: filter.page * filter.limit});
-    aggregate.push({$limit: filter.limit});
+    if (filter.page !== null) { 
+        aggregate.push({$skip: filter.page * filter.limit});
+    } else {
+        throw new Error('Page harus diisi');
+    }
+
+    if (filter.limit !== null && filter.limit > 0) {
+        aggregate.push({$limit: filter.limit});
+    } else {
+        throw new Error('limit harus diisi dan lebih dari 0');
+    }
 
     try {
         const transactions = await transactionModel.aggregate(aggregate);

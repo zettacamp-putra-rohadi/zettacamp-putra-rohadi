@@ -32,8 +32,8 @@ scalar Date
         recipe_name: String
         order_status: OrderStatus
         order_date: Date
-        page: Int
-        limit: Int
+        page: Int!
+        limit: Int!
     }
 
     type TransactionResult{

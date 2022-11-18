@@ -73,10 +73,21 @@ const getAllIngredients = async (parent, {filter}, context) => {
             throw new Error('Stock harus lebih dari 0');
         }
     }
+
     aggregate.push({$match: query});
-    aggregate.push({$skip: filter.page * filter.limit});
-    aggregate.push({$limit: filter.limit});
-    
+
+    if (filter.page !== null) { 
+        aggregate.push({$skip: filter.page * filter.limit});
+    } else {
+        throw new Error('Page harus diisi');
+    }
+
+    if (filter.limit !== null && filter.limit > 0) {
+        aggregate.push({$limit: filter.limit});
+    } else {
+        throw new Error('limit harus diisi dan lebih dari 0');
+    }
+
     try {
         const ingredients = await ingredientModel.aggregate(aggregate);
         const total = ingredients.length;

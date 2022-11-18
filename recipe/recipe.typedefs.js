@@ -32,8 +32,9 @@ const typeDefs = gql`
 
     input filterRecipe {
         recipe_name: String
-        page: Int
-        limit: Int
+        recipe_status: recipeStatusInput
+        page: Int!
+        limit: Int!
     }
 
     input IngredientInput {

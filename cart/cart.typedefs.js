@@ -20,14 +20,14 @@ const typeDefs = gql`
     }
 
     input MenuInput {
-        recipe_id : ID
+        recipe_id : ID!
         amount : Int!
         note : String
     }
 
     type Query {
-        getAllCarts(_id : ID) : Carts,
-        getOneCart(id : ID) : Cart
+        getAllCarts(page: Int!, limit: Int!) : Carts,
+        getOneCart(id : ID!) : Cart
     }
 
     type Mutation {
