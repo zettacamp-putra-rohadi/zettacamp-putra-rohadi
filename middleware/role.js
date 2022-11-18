@@ -8,13 +8,15 @@ const verifRole = async function (resolver, parent, ags, context){
 module.exports = {
     Query: {
         getAllUsers: verifRole,
-        // getOneUser: verifRole,
+        // getOneUser,
         getAllIngredients: verifRole,
         getOneIngredient: verifRole,
-        // getAllRecipes: verifRole,
-        // getOneRecipes: verifRole,
-        // getAllTransactions: verifRole,
-        // getOneTransaction: verifRole,
+        // getAllRecipes,
+        // getOneRecipes,
+        // getAllTransactions,
+        // getOneTransaction,
+        // getAllCarts,
+        // getOneCart,
     },
     Mutation: {
         updateUser: verifRole,
@@ -26,7 +28,10 @@ module.exports = {
         updateRecipe: verifRole,
         deleteRecipe: verifRole,
         updateRecipeStatus: verifRole,
-        // createTransaction: verifRole,
+        // createTransaction,
         deleteTransaction: verifRole,
+        // createCart,
+        // updateCart,
+        // deleteCart,
     }
 };
