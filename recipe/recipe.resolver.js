@@ -115,6 +115,42 @@ const getAllRecipes = async (parent, {filter}, context) => {
     }
 }
 
+const getAllRecipesPublic = async (parent, {filter}, context) => {
+    let aggregate = [];
+    let query = {$and: []};
+
+    query.$and.push({recipe_status: 'ACTIVE'});
+    filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
+
+    aggregate.push({$match: query});
+    
+    if (filter.page !== null) { 
+        aggregate.push({$skip: filter.page * filter.limit});
+    } else {
+        throw new Error('Page harus diisi');
+    }
+
+    if (filter.limit !== null && filter.limit > 0) {
+        aggregate.push({$limit: filter.limit});
+    } else {
+        throw new Error('limit harus diisi dan lebih dari 0');
+    }
+
+    try {
+        const recipes = await recipeModel.aggregate(aggregate);
+        const total = recipes.length;
+        if(recipes.length == 0){
+            throw new Error('Recipe tidak ditemukan');
+        }
+        return {
+            listRecipe: recipes,
+            total
+        };
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 const getOneRecipe = async (parent, {_id}, context) => {
     let aggregate = [];
     let query = {$and: []};
@@ -156,7 +192,8 @@ const getAvailableStock = async function (parent, args, context) {
 module.exports = {
     Query : {
         getAllRecipes,
-        getOneRecipe
+        getOneRecipe,
+        getAllRecipesPublic
     },
     Mutation : {
         createRecipe,

@@ -55,6 +55,7 @@ const typeDefs = gql`
 
     type Query {
         getAllRecipes(filter: filterRecipe): RecipesResult
+        getAllRecipesPublic(filter: filterRecipe): RecipesResult
         getOneRecipe(_id: ID!): GetRecipe
     }
 
