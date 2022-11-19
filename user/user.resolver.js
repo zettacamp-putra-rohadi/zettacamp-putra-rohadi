@@ -10,22 +10,28 @@ const createUser = async function (parent, {user_input}, context){
         {
             name: "homepage",
             view: true
-        },{
+        },
+        {
             name: "login",
             view: true
-        },{
+        },
+        {
             name: "menu",
             view: true
-        },{
+        },
+        {
             name: "cart",
             view: true
-        },{
+        },
+        {
             name: "about",
             view: true
-        },{
+        },
+        {
             name: "stock_management",
             view: true
-        },{
+        },
+        {
             name: "menu_management",
             view: true
         }
@@ -34,22 +40,28 @@ const createUser = async function (parent, {user_input}, context){
     const permissionUser = [{
         name: "homepage",
         view: true
-    },{
+    },
+    {
         name: "login",
         view: true
-    },{
+    },
+    {
         name: "menu",
         view: true
-    },{
+    },
+    {
         name: "cart",
         view: true
-    },{
+    },
+    {
         name: "about",
         view: true
-    },{
+    },
+    {
         name: "stock_management",
         view: false
-    },{
+    },
+    {
         name: "menu_management",
         view: false
     }];
@@ -154,14 +166,14 @@ const getAllUsers = async (parent, {user_input}, context) => {
     
     aggregate.push({$match: query});
     
-    if (unser_input.page !== null) { 
-        aggregate.push({$skip: unser_input.page * unser_input.limit});
+    if (user_input.page !== null) { 
+        aggregate.push({$skip: user_input.page * user_input.limit});
     } else {
         throw new Error('Page harus diisi');
     }
 
-    if (unser_input.limit !== null && unser_input.limit > 0) {
-        aggregate.push({$limit: unser_input.limit});
+    if (user_input.limit !== null && user_input.limit > 0) {
+        aggregate.push({$limit: user_input.limit});
     } else {
         throw new Error('limit harus diisi dan lebih dari 0');
     }

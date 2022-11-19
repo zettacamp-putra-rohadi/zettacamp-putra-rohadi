@@ -19,7 +19,7 @@ module.exports = {
         // getOneCart,
     },
     Mutation: {
-        updateUser: verifRole,
+        // updateUser,
         deleteUser: verifRole,
         createIngredient: verifRole,
         updateIngredient: verifRole,
