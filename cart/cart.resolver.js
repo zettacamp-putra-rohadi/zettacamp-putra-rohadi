@@ -1,4 +1,5 @@
 const cartModel = require('./cart.model');
+const recipeModel = require('../recipe/recipe.model');
 const mongoose = require('mongoose');
 
 const createCart = async (parent, {menu}, context) => {
@@ -64,11 +65,22 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     }
     try {
         const carts = await cartModel.aggregate(aggregate);
+        const total = carts.length;
+        let totalPrice = 0;
+        
         if(carts.length == 0){
             throw new Error('Cart tidak ditemukan');
         }
+        
+        for (data of carts){
+            const recipe = await recipeModel.findById(data.recipe_id);
+            totalPrice += recipe.price * data.amount;
+        }
+        
         return {
-            listCart : carts
+            listCart : carts,
+            total : total,
+            totalPrice : totalPrice
         };
     } catch (error) {
         throw new Error(error);

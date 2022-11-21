@@ -4,7 +4,7 @@ const ingredientModel = require('../ingredient/ingredient.model');
 const cartModel = require('../cart/cart.model');
 const mongoose = require('mongoose');
 
-const createTransaction = async (parent, {menu_input}, context) => {
+const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     const userId = context.user_id;
     try {
         const isStock = await validateStockIngredient(menu_input);
@@ -13,6 +13,7 @@ const createTransaction = async (parent, {menu_input}, context) => {
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu: menu_input,
+                total_price: totalPrice,
                 order_status: 'SUCCESS',
                 order_date: Date.now(),
                 transaction_status: 'ACTIVE'
@@ -28,6 +29,7 @@ const createTransaction = async (parent, {menu_input}, context) => {
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu : menu_input,
+                total_price: totalPrice,
                 order_status: 'FAILED',
                 order_date: Date.now(),
                 transaction_status: 'ACTIVE'

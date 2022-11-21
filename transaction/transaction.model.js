@@ -9,6 +9,7 @@ const transactionSchema = new mongoose.Schema({
             note: String
         }
     ],
+    total_price: Number,
     order_status: {
         type: String,
         enum: ["SUCCESS", "FAILED"],

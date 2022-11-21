@@ -17,6 +17,8 @@ const typeDefs = gql`
 
     type Carts {
         listCart : [Cart]
+        total : Int
+        totalPrice : Float
     }
 
     input MenuInput {

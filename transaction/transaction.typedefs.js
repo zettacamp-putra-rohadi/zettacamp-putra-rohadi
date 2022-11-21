@@ -6,6 +6,7 @@ scalar Date
         _id: ID
         user_id: Users
         menu: [Menu]
+        total_price: Float
         order_status: OrderStatus
         order_date: Date
         transaction_status: TransactionStatus
@@ -42,8 +43,8 @@ scalar Date
     }
 
     input MenuInput{
-        recipe_id: ID
-        amount: Int
+        recipe_id: ID!
+        amount: Int!
         note: String
     }
 
@@ -53,7 +54,7 @@ scalar Date
     }
 
     type Mutation{
-        createTransaction(menu_input: [MenuInput]): Transaction
+        createTransaction(menu_input: [MenuInput], totalPrice : Float!): Transaction
         deleteTransaction(id: ID!): Transaction
     }
 `;
