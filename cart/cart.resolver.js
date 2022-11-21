@@ -3,13 +3,20 @@ const recipeModel = require('../recipe/recipe.model');
 const mongoose = require('mongoose');
 
 const createCart = async (parent, {menu}, context) => {
+    const userId = context.user_id;
+    const recipeId = menu.recipe_id;
+    let amount = menu.amount;
+    const cart = await cartModel.findOne({user_id: userId, recipe_id: recipeId, cart_status: 'ACTIVE'});
+    if(cart){
+        amount = cart.amount + menu.amount;
+    }
     try{
     const newCart = await cartModel.updateOne(
-        {user_id: context.user_id, recipe_id : menu.recipe_id, cart_status : 'ACTIVE'},
+        {user_id: userId, recipe_id : recipeId, cart_status : 'ACTIVE'},
         {
             user_id: context.user_id,
             recipe_id : menu.recipe_id,
-            amount : menu.amount,
+            amount : amount,
             note : menu.note,
             cart_status: 'ACTIVE'
         },
