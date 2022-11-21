@@ -55,7 +55,7 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     //user id dr token
     query.$and.push({cart_status: {$eq: 'ACTIVE'}});
     if (context.role === 'USER') {
-        query.$and.push({user_id: context.user_id});
+        query.$and.push({user_id: mongoose.Types.ObjectId(context.user_id)});
     }
     aggregate.push({$match: query});
     
