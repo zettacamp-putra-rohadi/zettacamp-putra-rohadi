@@ -38,7 +38,7 @@ const typeDefs = gql`
 
     type Mutation {
         createCart(menu : MenuInput) : CreateReturn,
-        updateCart(_id : ID!, menu : [MenuInput]) : Cart,
+        updateCart(menu : MenuInput) : Cart,
         deleteCart(_id : ID!) : Cart
     }
 `;

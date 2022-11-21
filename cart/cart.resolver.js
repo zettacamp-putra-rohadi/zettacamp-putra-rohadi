@@ -28,8 +28,11 @@ const createCart = async (parent, {menu}, context) => {
     }
 }
 
-const updateCart = async (parent, {_id, menu}, context) => {
-    const cart = await cartModel.findOne({_id: _id});
+const updateCart = async (parent, {menu}, context) => {
+    const userId = context.user_id;
+    const recipeId = menu.recipe_id;
+    let amount = menu.amount;
+    const cart = await cartModel.findOne({user_id: userId, recipe_id : recipeId, cart_status : 'ACTIVE'});
     if(!cart){
         throw new Error('Cart tidak ditemukan');
     }
@@ -38,11 +41,13 @@ const updateCart = async (parent, {_id, menu}, context) => {
     }
     const queryUpdate = {};
 
-    menu[0].recipe_id ? queryUpdate.recipe_id = menu[0].recipe_id : null;
-    menu[0].amount ? queryUpdate.amount = menu[0].amount : null;
-    menu[0].note ? queryUpdate.note = menu[0].note : null;
+    menu.recipe_id ? queryUpdate.recipe_id = recipeId : null;
+    menu.amount ? queryUpdate.amount = amount : null;
+    menu.note ? queryUpdate.note = menu.note : null;
 
-    const result = await cartModel.findByIdAndUpdate(_id, queryUpdate, {new: true});
+    const result = await cartModel.findOneAndUpdate(
+        {user_id: userId, recipe_id : recipeId, cart_status : 'ACTIVE'}, queryUpdate, {new: true});
+        console.log(result);
     return result;
 }
 
