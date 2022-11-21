@@ -3,15 +3,22 @@ const recipeModel = require('../recipe/recipe.model');
 const mongoose = require('mongoose');
 
 const createCart = async (parent, {menu}, context) => {
-    const newCart = new cartModel({
-        user_id: context.user_id,
-        recipe_id : menu.recipe_id,
-        amount : menu.amount,
-        note : menu.note,
-        cart_status: 'ACTIVE'
-    });
-    const result = await newCart.save();
-    return result;
+    try{
+    const newCart = await cartModel.updateOne(
+        {user_id: context.user_id, recipe_id : menu.recipe_id, cart_status : 'ACTIVE'},
+        {
+            user_id: context.user_id,
+            recipe_id : menu.recipe_id,
+            amount : menu.amount,
+            note : menu.note,
+            cart_status: 'ACTIVE'
+        },
+        {upsert: true}
+    );
+    return {status: 'Cart berhasil ditambahkan'};
+    } catch (error) {
+        throw new Error(error);
+    }
 }
 
 const updateCart = async (parent, {_id, menu}, context) => {
@@ -71,7 +78,7 @@ const getAllCarts = async (parent, {page, limit}, context) => {
         if(carts.length == 0){
             throw new Error('Cart tidak ditemukan');
         }
-        
+
         for (data of carts){
             const recipe = await recipeModel.findById(data.recipe_id);
             totalPrice += recipe.price * data.amount;
@@ -99,6 +106,12 @@ const getOneCart = async (parent, {id}, context) => {
     }
 }
 
+const getRecipeLoader = async (parent, ags, context) => {
+    if (parent.recipe_id){
+        return await context.RecipeLoader.load(parent.recipe_id);
+    }
+}
+
 module.exports = {
     Query : {
         getAllCarts,
@@ -108,5 +121,8 @@ module.exports = {
         createCart,
         updateCart,
         deleteCart
+    },
+    Cart : {
+        recipe_id : getRecipeLoader
     }
 }
