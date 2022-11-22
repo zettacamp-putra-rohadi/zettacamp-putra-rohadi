@@ -9,7 +9,6 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     try {
         const isStock = await validateStockIngredient(menu_input);
         if (isStock) {
-            console.log('stock cukup');
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu: menu_input,
@@ -25,7 +24,6 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
             });
             return result;
         } else {
-            console.log('stock tidak cukup');
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu : menu_input,

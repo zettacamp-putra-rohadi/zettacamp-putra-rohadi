@@ -2,6 +2,7 @@ const UserModel = require('./user.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const {GraphQLError} = require('graphql');
 
 
 const createUser = async function (parent, {user_input}, context){
@@ -98,8 +99,14 @@ const createUser = async function (parent, {user_input}, context){
 
 const loginUser = async (parent, {user_input}, context) => {
     const user = await UserModel.aggregate([{$match: {$and:[{email : user_input.email},{user_status : "ACTIVE"}]}}]);
-    if(!user){
-        throw new Error('Email tidak ditemukan');
+    console.log(user);
+    if(user.length == 0){
+        // throw new Error('Email tidak ditemukan');
+        throw new GraphQLError('User tidak ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     if(user[0].user_status == 'DELETED'){
         throw new Error('Email telah dihapus, silahkan daftar kembali');

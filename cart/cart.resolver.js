@@ -47,7 +47,6 @@ const updateCart = async (parent, {menu}, context) => {
 
     const result = await cartModel.findOneAndUpdate(
         {user_id: userId, recipe_id : recipeId, cart_status : 'ACTIVE'}, queryUpdate, {new: true});
-        console.log(result);
     return result;
 }
 
