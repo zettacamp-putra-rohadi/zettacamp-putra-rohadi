@@ -1,6 +1,7 @@
 const recipeModel = require('./recipe.model');
 const ingredientModel = require('../ingredient/ingredient.model');
 const mongoose = require('mongoose');
+const {GraphQLError} = require('graphql');
 
 const createRecipe = async (parent, {name, picture, price, ingredients}, context) => {
     const newRecipe = new recipeModel({
@@ -17,10 +18,18 @@ const createRecipe = async (parent, {name, picture, price, ingredients}, context
 const updateRecipe = async (parent, {_id, name, picture, price, ingredients}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
     if(!recipe){
-        throw new Error('Recipe tidak ditemukan');
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     if(recipe.recipe_status === 'DELETED'){
-        throw new Error('Recipe telah dihapus');
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 
     let queryUpdate = {};
@@ -37,13 +46,25 @@ const updateRecipe = async (parent, {_id, name, picture, price, ingredients}, co
 const deleteRecipe = async (parent, {_id}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
     if(!recipe){
-        throw new Error('Recipe tidak ditemukan');
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     if(recipe.recipe_status === 'DELETED'){
-        throw new Error('Recipe telah dihapus');
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     if(recipe.recipe_status === 'ACTIVE'){
-        throw new Error('Recipe masih digunakan');
+        throw new GraphQLError('Recipe Masih Digunakan', {
+            extensions: {
+                code: 409,
+            }
+        });
     }
     const result = await recipeModel.findOneAndUpdate({_id: _id}, {
         recipe_status: 'DELETED'
@@ -54,7 +75,11 @@ const deleteRecipe = async (parent, {_id}, context) => {
 const updateRecipeStatus = async (parent, {_id, recipe_status}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
     if(!recipe){
-        throw new Error('Recipe tidak ditemukan');
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     if(recipe_status === 'UNPUBLISH'){
         const result = await recipeModel.findOneAndUpdate({_id: _id}, {
@@ -91,20 +116,32 @@ const getAllRecipes = async (parent, {filter}, context) => {
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
     } else {
-        throw new Error('Page harus diisi');
+        throw new GraphQLError('Page harus diisi', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     if (filter.limit !== null && filter.limit > 0) {
         aggregate.push({$limit: filter.limit});
     } else {
-        throw new Error('limit harus diisi dan lebih dari 0');
+        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     try {
         const recipes = await recipeModel.aggregate(aggregate);
         const total = recipes.length;
         if(recipes.length == 0){
-            throw new Error('Recipe tidak ditemukan');
+            throw new GraphQLError('Recipe Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return {
             listRecipe: recipes,
@@ -127,20 +164,32 @@ const getAllRecipesPublic = async (parent, {filter}, context) => {
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
     } else {
-        throw new Error('Page harus diisi');
+        throw new GraphQLError('Page harus diisi', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     if (filter.limit !== null && filter.limit > 0) {
         aggregate.push({$limit: filter.limit});
     } else {
-        throw new Error('limit harus diisi dan lebih dari 0');
+        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     try {
         const recipes = await recipeModel.aggregate(aggregate);
         const total = recipes.length;
         if(recipes.length == 0){
-            throw new Error('Recipe tidak ditemukan');
+            throw new GraphQLError('Recipe Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return {
             listRecipe: recipes,
@@ -167,7 +216,11 @@ const getOneRecipe = async (parent, {_id}, context) => {
     try {
         const recipe = await recipeModel.aggregate(aggregate);
         if(recipe.length == 0){
-            throw new Error('recipe tidak ditemukan');
+            throw new GraphQLError('Recipe Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return recipe[0];
     } catch (error) {

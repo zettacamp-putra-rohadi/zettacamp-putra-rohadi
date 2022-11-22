@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const {GraphQLError} = require('graphql');
 const UserModel = require('../user/user.model');
 
 const userAuth = async function (resolver, parent, ags, context){

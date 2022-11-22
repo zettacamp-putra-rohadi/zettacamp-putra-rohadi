@@ -1,6 +1,7 @@
 const ingredientModel = require('./ingredient.model');
 const recipeModel = require('../recipe/recipe.model');
 const mongoose = require('mongoose');
+const {GraphQLError} = require('graphql');
 
 const createIngredient = async (parent, {name, stock}, context) => {
     const ingredient = await ingredientModel.findOne({name: name});
