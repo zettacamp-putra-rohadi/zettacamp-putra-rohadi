@@ -211,18 +211,18 @@ const getAllUsers = async (parent, {user_input}, context) => {
         const users = await UserModel.aggregate(aggregate);
         const total = users.length;
         if(users.length == 0){
-            throw new GraphQLError('User tidak ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return {
             users,
             total
         };
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('User tidak ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 
@@ -238,15 +238,15 @@ const getOneUser = async (parent, {_id, email}, context) => {
     try {
         const user = await UserModel.aggregate(aggregate);
         if(user.length == 0){
-            throw new GraphQLError('User tidak ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return user[0];
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('User tidak ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 

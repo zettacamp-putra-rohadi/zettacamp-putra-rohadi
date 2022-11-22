@@ -133,18 +133,18 @@ const getAllIngredients = async (parent, {filter}, context) => {
         const ingredients = await ingredientModel.aggregate(aggregate);
         const total = ingredients.length;
         if(ingredients.length == 0){
-            throw new GraphQLError('Ingredient Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return {
             listIngredient: ingredients,
             total
         };
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 
@@ -157,15 +157,15 @@ const getOneIngredient = async (parent, {_id}, context) => {
     try {
         const ingredient = await ingredientModel.aggregate(aggregate);
         if(ingredient.length == 0){
-            throw new GraphQLError('Ingredient Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return ingredient[0];
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 

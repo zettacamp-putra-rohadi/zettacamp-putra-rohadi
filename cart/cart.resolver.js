@@ -108,11 +108,7 @@ const getAllCarts = async (parent, {page, limit}, context) => {
         let totalPrice = 0;
         
         if(carts.length == 0){
-            throw new GraphQLError('Cart Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
 
         for (data of carts){
@@ -126,7 +122,11 @@ const getAllCarts = async (parent, {page, limit}, context) => {
             totalPrice : totalPrice
         };
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Cart Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 
@@ -134,15 +134,15 @@ const getOneCart = async (parent, {id}, context) => {
     try{
         const cart = await cartModel.findById(id);
         if(!cart){
-            throw new GraphQLError('Cart Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return cart;
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Cart Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 

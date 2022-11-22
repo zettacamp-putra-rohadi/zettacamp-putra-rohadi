@@ -175,18 +175,18 @@ const getAllTransactions = async (parent, {filter}, context) => {
         const transactions = await transactionModel.aggregate(aggregate);
         const total = transactions.length;
         if(transactions.length == 0){
-            throw new GraphQLError('Transaction Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return {
             listTransaction: transactions,
             total
         };
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Transaction Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 
@@ -200,7 +200,7 @@ const getOneTransaction = async (parent, {id}, context) => {
 
     try {
         const transaction = await transactionModel.aggregate(aggregate);
-        if(!transaction){
+        if(transaction.length == 0){
             throw new GraphQLError('Transaction Tidak Ditemukan', {
                 extensions: {
                     code: 404,
@@ -216,7 +216,11 @@ const getOneTransaction = async (parent, {id}, context) => {
         }
         return transaction[0];
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Transaction Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 

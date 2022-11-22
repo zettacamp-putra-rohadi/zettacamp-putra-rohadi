@@ -137,18 +137,18 @@ const getAllRecipes = async (parent, {filter}, context) => {
         const recipes = await recipeModel.aggregate(aggregate);
         const total = recipes.length;
         if(recipes.length == 0){
-            throw new GraphQLError('Recipe Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return {
             listRecipe: recipes,
             total
         };
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 
@@ -185,18 +185,18 @@ const getAllRecipesPublic = async (parent, {filter}, context) => {
         const recipes = await recipeModel.aggregate(aggregate);
         const total = recipes.length;
         if(recipes.length == 0){
-            throw new GraphQLError('Recipe Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error
         }
         return {
             listRecipe: recipes,
             total
         };
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 
@@ -216,15 +216,15 @@ const getOneRecipe = async (parent, {_id}, context) => {
     try {
         const recipe = await recipeModel.aggregate(aggregate);
         if(recipe.length == 0){
-            throw new GraphQLError('Recipe Tidak Ditemukan', {
-                extensions: {
-                    code: 404,
-                }
-            });
+            throw error;
         }
         return recipe[0];
     } catch (error) {
-        throw new Error(error);
+        throw new GraphQLError('Recipe Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
 }
 
