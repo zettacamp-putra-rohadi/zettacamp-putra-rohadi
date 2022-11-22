@@ -1,6 +1,10 @@
 const verifRole = async function (resolver, parent, ags, context){
     if(context.role !== 'ADMIN'){
-        throw new Error('Anda bukan admin!');
+        throw new GraphQLError('Anda Bukan Admin!', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     return resolver();
 }

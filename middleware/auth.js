@@ -4,7 +4,11 @@ const UserModel = require('../user/user.model');
 const userAuth = async function (resolver, parent, ags, context){
     const token = context.req.get('Authorization');
     if(!token){
-        throw new Error('Token is required');
+        throw new GraphQLError('Anda belum login', {
+            extensions: {
+                code: 403,
+            }
+        });
     }
     try{
         const user = await jwt.verify(token, 'secretbanget');
@@ -13,7 +17,11 @@ const userAuth = async function (resolver, parent, ags, context){
         context.token = token;
         return resolver();
     }catch(err){
-        throw new Error('Invalid token');
+        throw new GraphQLError('Token Salah', {
+            extensions: {
+                code: 401,
+            }
+        });
     }
 }
 

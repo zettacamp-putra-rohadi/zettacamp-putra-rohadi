@@ -75,7 +75,11 @@ const createUser = async function (parent, {user_input}, context){
 
     const user = await UserModel.findOne({email: user_input.email});
     if(user && user.user_status === 'ACTIVE'){
-        throw new Error('Email telah digunakan');
+        throw new GraphQLError('Email telah digunakan', {
+            extensions: {
+                code: 404,
+            }
+        });
     } 
     if(user && user.user_status === 'DELETED'){
         const updateStatus = await UserModel.findOneAndUpdate({email: user_input.email}, {
@@ -99,21 +103,23 @@ const createUser = async function (parent, {user_input}, context){
 
 const loginUser = async (parent, {user_input}, context) => {
     const user = await UserModel.aggregate([{$match: {$and:[{email : user_input.email},{user_status : "ACTIVE"}]}}]);
-    console.log(user);
+    console.log(user[0].user_status);
+    //check email
     if(user.length == 0){
-        // throw new Error('Email tidak ditemukan');
-        throw new GraphQLError('User tidak ditemukan', {
+        throw new GraphQLError('Email atau Password Salah', {
             extensions: {
-                code: 404,
+                code: 401,
             }
         });
     }
-    if(user[0].user_status == 'DELETED'){
-        throw new Error('Email telah dihapus, silahkan daftar kembali');
-    }
+    //check password
     const isPasswordValid = await bcrypt.compare(user_input.password, user[0].hashed_password);
     if(!isPasswordValid){
-        throw new Error('Password salah');
+        throw new GraphQLError('Email atau Password Salah', {
+            extensions: {
+                code: 401,
+            }
+        });
     }
     const token = jwt.sign({
         id: user[0]._id, 
@@ -128,10 +134,18 @@ const loginUser = async (parent, {user_input}, context) => {
 const updateUser = async (parent, {_id, user_input}, context) => {
     const user = await UserModel.findOne({_id: _id});
     if(!user){
-        throw new Error('User tidak ditemukan');
+        throw new GraphQLError('Email telah digunakan', {
+            extensions: {
+                code: 409,
+            }
+        });
     }
     if(user.status === 'DELETED'){
-        throw new Error('User telah dihapus');
+        throw new GraphQLError('User tidak ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     const queryUpdate = {};
     if(user_input.password){
@@ -151,7 +165,11 @@ const updateUser = async (parent, {_id, user_input}, context) => {
 const deleteUser = async (parent, {_id}, context) => {
     const user = await UserModel.findOne({_id: mongoose.Types.ObjectId(_id)});
     if(!user){
-        throw new Error('User tidak ditemukan');
+        throw new GraphQLError('User tidak ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     user.user_status = 'DELETED';
     const result = await user.save();
@@ -173,20 +191,32 @@ const getAllUsers = async (parent, {user_input}, context) => {
     if (user_input.page !== null) { 
         aggregate.push({$skip: user_input.page * user_input.limit});
     } else {
-        throw new Error('Page harus diisi');
+        throw new GraphQLError('Page harus diisi', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     if (user_input.limit !== null && user_input.limit > 0) {
         aggregate.push({$limit: user_input.limit});
     } else {
-        throw new Error('limit harus diisi dan lebih dari 0');
+        throw new GraphQLError('Limit harus diisi dan lebih besar dari 0', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     try {
         const users = await UserModel.aggregate(aggregate);
         const total = users.length;
         if(users.length == 0){
-            throw new Error('User tidak ditemukan');
+            throw new GraphQLError('User tidak ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return {
             users,
@@ -209,7 +239,11 @@ const getOneUser = async (parent, {_id, email}, context) => {
     try {
         const user = await UserModel.aggregate(aggregate);
         if(user.length == 0){
-            throw new Error('User tidak ditemukan');
+            throw new GraphQLError('User tidak ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return user[0];
     } catch (error) {
