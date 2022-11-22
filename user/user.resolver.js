@@ -103,7 +103,6 @@ const createUser = async function (parent, {user_input}, context){
 
 const loginUser = async (parent, {user_input}, context) => {
     const user = await UserModel.aggregate([{$match: {$and:[{email : user_input.email},{user_status : "ACTIVE"}]}}]);
-    console.log(user[0].user_status);
     //check email
     if(user.length == 0){
         throw new GraphQLError('Email atau Password Salah', {
