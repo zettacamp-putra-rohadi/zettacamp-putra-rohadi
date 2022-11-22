@@ -3,6 +3,7 @@ const recipeModel = require('../recipe/recipe.model');
 const ingredientModel = require('../ingredient/ingredient.model');
 const cartModel = require('../cart/cart.model');
 const mongoose = require('mongoose');
+const {GraphQLError} = require('graphql');
 
 const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     const userId = context.user_id;
@@ -33,7 +34,11 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 transaction_status: 'ACTIVE'
             });
             await newTransaction.save();
-            throw new Error("Stok tidak mencukupi");
+            throw new GraphQLError('Stock Tidak Mencukupi', {
+                extensions: {
+                    code: 400,
+                }
+            });
         }
     } catch (error) {
         throw error;
@@ -84,10 +89,18 @@ function reduceingredientStock(ingredientsUsed) {
 const deleteTransaction = async (parent, {id}, context) => {
     const transaction = await transactionModel.findOne({_id: id});
     if(!transaction){
-        throw new Error('transaction tidak ditemukan');
+        throw new GraphQLError('Transaction Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     if(transaction.transaction_status === 'DELETED'){
-        throw new Error('transaction telah dihapus');
+        throw new GraphQLError('Transaction Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     const result = await transactionModel.findOneAndUpdate({_id: id}, {
         transaction_status: 'DELETED'
@@ -141,20 +154,32 @@ const getAllTransactions = async (parent, {filter}, context) => {
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
     } else {
-        throw new Error('Page harus diisi');
+        throw new GraphQLError('Page harus diisi', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     if (filter.limit !== null && filter.limit > 0) {
         aggregate.push({$limit: filter.limit});
     } else {
-        throw new Error('limit harus diisi dan lebih dari 0');
+        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     try {
         const transactions = await transactionModel.aggregate(aggregate);
         const total = transactions.length;
         if(transactions.length == 0){
-            throw new Error('Transaction tidak ditemukan');
+            throw new GraphQLError('Transaction Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return {
             listTransaction: transactions,
@@ -176,10 +201,18 @@ const getOneTransaction = async (parent, {id}, context) => {
     try {
         const transaction = await transactionModel.aggregate(aggregate);
         if(!transaction){
-            throw new Error('Transaction tidak ditemukan');
+            throw new GraphQLError('Transaction Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         if(transaction.transaction_status == 'DELETED'){
-            throw new Error('Transaction telah dihapus');
+            throw new GraphQLError('Transaction Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return transaction[0];
     } catch (error) {

@@ -1,6 +1,7 @@
 const cartModel = require('./cart.model');
 const recipeModel = require('../recipe/recipe.model');
 const mongoose = require('mongoose');
+const {GraphQLError} = require('graphql');
 
 const createCart = async (parent, {menu}, context) => {
     const userId = context.user_id;
@@ -34,10 +35,18 @@ const updateCart = async (parent, {menu}, context) => {
     let amount = menu.amount;
     const cart = await cartModel.findOne({user_id: userId, recipe_id : recipeId, cart_status : 'ACTIVE'});
     if(!cart){
-        throw new Error('Cart tidak ditemukan');
+        throw new GraphQLError('Cart Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     if(cart.cart_status === 'DELETED'){
-        throw new Error('Cart telah dihapus');
+        throw new GraphQLError('Cart Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     const queryUpdate = {};
 
@@ -53,7 +62,11 @@ const updateCart = async (parent, {menu}, context) => {
 const deleteCart = async (parent, {_id}, context) => {
     const cart = await cartModel.findOne({_id: mongoose.Types.ObjectId(_id)});
     if(!cart){
-        throw new Error('Cart tidak ditemukan');
+        throw new GraphQLError('Cart Tidak Ditemukan', {
+            extensions: {
+                code: 404,
+            }
+        });
     }
     cart.cart_status = 'DELETED';
     const result = await cart.save();
@@ -73,13 +86,21 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     if (page !== null) { 
         aggregate.push({$skip: page * limit});
     } else {
-        throw new Error('Page harus diisi');
+        throw new GraphQLError('Page harus diisi', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
 
     if (limit !== null && limit > 0) {
         aggregate.push({$limit: limit});
     } else {
-        throw new Error('limit harus diisi dan lebih dari 0');
+        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+            extensions: {
+                code: 400,
+            }
+        });
     }
     try {
         const carts = await cartModel.aggregate(aggregate);
@@ -87,7 +108,11 @@ const getAllCarts = async (parent, {page, limit}, context) => {
         let totalPrice = 0;
         
         if(carts.length == 0){
-            throw new Error('Cart tidak ditemukan');
+            throw new GraphQLError('Cart Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
 
         for (data of carts){
@@ -109,7 +134,11 @@ const getOneCart = async (parent, {id}, context) => {
     try{
         const cart = await cartModel.findById(id);
         if(!cart){
-            throw new Error('Cart tidak ditemukan');
+            throw new GraphQLError('Cart Tidak Ditemukan', {
+                extensions: {
+                    code: 404,
+                }
+            });
         }
         return cart;
     } catch (error) {
