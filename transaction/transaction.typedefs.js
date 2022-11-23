@@ -47,6 +47,23 @@ scalar Date
         amount: Int!
         note: String
     }
+    
+    type CreateTransaction{
+        _id: ID
+        user_id: Users
+        menu: [Menu]
+        total_price: Float
+        order_status: OrderStatus
+        order_date: Date
+        transaction_status: TransactionStatus
+        DeclineRecipe: DeclineRecipe
+    }
+
+    type DeclineRecipe{
+        isStock: Boolean
+        recipe_id: ID
+        recipe_name: String
+    }
 
     type Query{
         getAllTransactions(filter: TransactionInput): TransactionResult
@@ -54,7 +71,7 @@ scalar Date
     }
 
     type Mutation{
-        createTransaction(menu_input: [MenuInput], totalPrice : Float!): Transaction
+        createTransaction(menu_input: [MenuInput], totalPrice : Float!): CreateTransaction
         deleteTransaction(id: ID!): Transaction
     }
 `;

@@ -9,14 +9,14 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     const userId = context.user_id;
     try {
         const isStock = await validateStockIngredient(menu_input);
-        if (isStock) {
+        if (isStock.isStock) {
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu: menu_input,
                 total_price: totalPrice,
                 order_status: 'SUCCESS',
                 order_date: Date.now(),
-                transaction_status: 'ACTIVE'
+                transaction_status: 'ACTIVE',
             });
             const result = await newTransaction.save();
             //delete cart with userid
@@ -31,14 +31,20 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 total_price: totalPrice,
                 order_status: 'FAILED',
                 order_date: Date.now(),
-                transaction_status: 'ACTIVE'
+                transaction_status: 'ACTIVE',
             });
-            await newTransaction.save();
-            throw new GraphQLError('Stock Tidak Mencukupi', {
-                extensions: {
-                    code: 400,
-                }
-            });
+            const result = await newTransaction.save();
+            result.DeclineRecipe = {
+                isStock: isStock.isStock,
+                recipe_id: isStock.recipe_id,
+                name: isStock.name,
+            };
+            return result;
+            // throw new GraphQLError('Stock Tidak Mencukupi', {
+            //     extensions: {
+            //         code: 400,
+            //     }
+            // });
         }
     } catch (error) {
         throw error;
@@ -48,13 +54,17 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
 async function validateStockIngredient(recipe_input) {
     let ingredientsUsed = [];
     let isStock = true;
+    let listRecipe = {};
     for (let a = 0; a < recipe_input.length; a++) {
         const recipe = await recipeModel.findById(recipe_input[a].recipe_id);
         for (let i = 0; i < recipe.ingredients.length; i++) {
             const ingredient = await ingredientModel.findById(recipe.ingredients[i].ingredient_id);
             if (ingredient.stock < (recipe.ingredients[i].stock_used * recipe_input[a].amount)) {
                 isStock = false;
-                return isStock;
+                listRecipe.isStock = isStock;
+                listRecipe.recipe_id = recipe._id;
+                listRecipe.recipe_name = recipe.name;
+                return listRecipe;
             } else {
                 ingredientsUsed.push({
                     ingredient_id: recipe.ingredients[i].ingredient_id,
@@ -62,13 +72,14 @@ async function validateStockIngredient(recipe_input) {
                 });
             }
         }
-        if (isStock) {
-            const result = reduceingredientStock(ingredientsUsed);
-            isStock = result;
-            ingredientsUsed = [];
-        }
     }
-    return isStock;
+    if (isStock) {
+        const result = reduceingredientStock(ingredientsUsed);
+        isStock = result;
+        ingredientsUsed = [];
+    }
+    listRecipe.isStock = isStock;
+    return listRecipe;
 }
 
 function reduceingredientStock(ingredientsUsed) {
