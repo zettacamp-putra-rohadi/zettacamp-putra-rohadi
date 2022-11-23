@@ -8,8 +8,16 @@ const {GraphQLError} = require('graphql');
 const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     const userId = context.user_id;
     try {
-        const isStock = await validateStockIngredient(menu_input);
-        if (isStock.isStock) {
+        const validateData = await validateStockIngredient(menu_input);
+        let isStock = true;
+        for (data of validateData) {
+            if (!data.isStock) {
+                isStock = false;
+                break;
+            }
+        }
+
+        if (isStock) {
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu: menu_input,
@@ -34,11 +42,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 transaction_status: 'ACTIVE',
             });
             const result = await newTransaction.save();
-            result.DeclineRecipe = {
-                isStock: isStock.isStock,
-                recipe_id: isStock.recipe_id,
-                name: isStock.name,
-            };
+            result.DeclineRecipe = validateData;
             return result;
             // throw new GraphQLError('Stock Tidak Mencukupi', {
             //     extensions: {
@@ -54,31 +58,41 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
 async function validateStockIngredient(recipe_input) {
     let ingredientsUsed = [];
     let isStock = true;
-    let listRecipe = {};
+    let listRecipe = [];
     for (let a = 0; a < recipe_input.length; a++) {
         const recipe = await recipeModel.findById(recipe_input[a].recipe_id);
         for (let i = 0; i < recipe.ingredients.length; i++) {
             const ingredient = await ingredientModel.findById(recipe.ingredients[i].ingredient_id);
             if (ingredient.stock < (recipe.ingredients[i].stock_used * recipe_input[a].amount)) {
                 isStock = false;
-                listRecipe.isStock = isStock;
-                listRecipe.recipe_id = recipe._id;
-                listRecipe.recipe_name = recipe.name;
-                return listRecipe;
+                break;
             } else {
+                isStock = true;
                 ingredientsUsed.push({
                     ingredient_id: recipe.ingredients[i].ingredient_id,
                     amount: recipe.ingredients[i].stock_used * recipe_input[a].amount
                 });
             }
         }
+        const data = {}
+        data.isStock = isStock;
+        data.recipe_id = recipe._id;
+        data.recipe_name = recipe.name;
+        listRecipe.push(data);
     }
-    if (isStock) {
+    let check = true;
+    for (data of listRecipe) {
+        if (!data.isStock) {
+            check = false;
+            break;
+        }
+    }
+    if (check) {
         const result = reduceingredientStock(ingredientsUsed);
         isStock = result;
         ingredientsUsed = [];
     }
-    listRecipe.isStock = isStock;
+    
     return listRecipe;
 }
 

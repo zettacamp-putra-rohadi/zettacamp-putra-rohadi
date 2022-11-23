@@ -56,7 +56,7 @@ scalar Date
         order_status: OrderStatus
         order_date: Date
         transaction_status: TransactionStatus
-        DeclineRecipe: DeclineRecipe
+        DeclineRecipe: [DeclineRecipe]
     }
 
     type DeclineRecipe{
