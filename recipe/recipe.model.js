@@ -5,7 +5,7 @@ const recipeSchema = new mongoose.Schema({
     picture: String,
     price: Number,
     ingredients: [{
-        ingredient_id : {type: mongoose.Schema.Types.ObjectId, ref: "ingredients"},
+        ingredient_id : {type: mongoose.Schema.Types.ObjectId, ref: "ingredients",  required: true},
         stock_used: Number
     }],
     recipe_status: {

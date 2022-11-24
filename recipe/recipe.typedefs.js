@@ -38,8 +38,8 @@ const typeDefs = gql`
     }
 
     input IngredientInput {
-        ingredient_id: ID
-        stock_used: Int
+        ingredient_id: ID!
+        stock_used: Int!
     }
 
     enum recipeStatus {
@@ -61,7 +61,7 @@ const typeDefs = gql`
 
     type Mutation {
         createRecipe(name: String!, picture: String!, price: Float!, ingredients: [IngredientInput]!): Recipe
-        updateRecipe(_id: ID!, name: String, picture: String, price: Float, ingredients: [IngredientInput]): Recipe
+        updateRecipe(_id: ID!, name: String, picture: String, price: Float, ingredients: [IngredientInput]!): Recipe
         deleteRecipe(_id: ID!): Recipe
         updateRecipeStatus(_id: ID!, recipe_status: recipeStatusInput!): Recipe
     }
