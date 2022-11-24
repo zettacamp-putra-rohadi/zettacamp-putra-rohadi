@@ -3,10 +3,14 @@ const UserModel = require('../user/user.model');
 const RecipeModel = require('../recipe/recipe.model');
 
 const loadTransactionUser = async (userIds) => {
-    const userList = await UserModel.find({_id: {$in: userIds}});
+    // const userList = await UserModel.find({_id: {$in: userIds}});
     const userMap = {};
+    const users = await UserModel.aggregate([
+        { $match: { _id: { $in: userIds } } },
+        { $project: { hashed_password:0 } }
+    ]);
     
-    userList.forEach((user) => {
+    users.forEach((user) => {
         userMap[user._id] = user;
     });
     

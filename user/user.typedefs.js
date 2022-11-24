@@ -6,7 +6,7 @@ const typeDefs = gql`
         first_name : String!
         last_name : String!
         email : String!
-        hashed_password : String!
+        hashed_password : String
         user_status : UserStatus
         role : RoleUser
         user_type : UserType
