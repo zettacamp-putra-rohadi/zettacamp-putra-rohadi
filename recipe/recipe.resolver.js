@@ -31,6 +31,13 @@ const updateRecipe = async (parent, {_id, name, picture, price, ingredients}, co
             }
         });
     }
+    if(recipe.recipe_status === 'ACTIVE'){
+        throw new GraphQLError('Recipe Masih Digunakan', {
+            extensions: {
+                code: 409,
+            }
+        });
+    }
 
     let queryUpdate = {};
     
