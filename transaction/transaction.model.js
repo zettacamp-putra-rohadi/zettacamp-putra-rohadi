@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const moment = require('moment');
 
 const transactionSchema = new mongoose.Schema({
     user_id: {type: mongoose.Schema.Types.ObjectId, ref: "users"},
@@ -15,7 +16,10 @@ const transactionSchema = new mongoose.Schema({
         enum: ["SUCCESS", "FAILED"],
         default: "SUCCESS"
     },
-    order_date: {type: Date, default: Date.now},
+    order_date: {
+        type: String, 
+        default: moment(new Date()).locale('id').format('LL')
+    },
     transaction_status: {
         type: String,
         enum: ["ACTIVE", "DELETED"],

@@ -4,6 +4,7 @@ const ingredientModel = require('../ingredient/ingredient.model');
 const cartModel = require('../cart/cart.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
+const moment = require('moment');
 
 const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     const userId = context.user_id;
@@ -23,7 +24,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 menu: menu_input,
                 total_price: totalPrice,
                 order_status: 'SUCCESS',
-                order_date: Date.now(),
+                order_date: moment(new Date()).locale('id').format('LL'),
                 transaction_status: 'ACTIVE',
             });
             const result = await newTransaction.save();
@@ -38,7 +39,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 menu : menu_input,
                 total_price: totalPrice,
                 order_status: 'FAILED',
-                order_date: Date.now(),
+                order_date: moment(new Date()).locale('id').format('LL'),
                 transaction_status: 'ACTIVE',
             });
             const result = await newTransaction.save();
@@ -169,6 +170,8 @@ const getAllTransactions = async (parent, {filter}, context) => {
     }
 
     if (filter.order_date){
+        filter.order_date = moment(filter.order_date).locale('id').format('LL');
+        filter.order_date = new RegExp(filter.order_date, 'i');
         query.$and.push({order_date: filter.order_date});
     }
 

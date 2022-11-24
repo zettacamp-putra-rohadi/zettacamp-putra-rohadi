@@ -8,7 +8,7 @@ scalar Date
         menu: [Menu]
         total_price: Float
         order_status: OrderStatus
-        order_date: Date
+        order_date: String
         transaction_status: TransactionStatus
     }
 
@@ -32,7 +32,7 @@ scalar Date
         last_name_user: String
         recipe_name: String
         order_status: OrderStatus
-        order_date: Date
+        order_date: String
         page: Int!
         limit: Int!
     }
@@ -54,7 +54,7 @@ scalar Date
         menu: [Menu]
         total_price: Float
         order_status: OrderStatus
-        order_date: Date
+        order_date: String
         transaction_status: TransactionStatus
         DeclineRecipe: [DeclineRecipe]
     }
