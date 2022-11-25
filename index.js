@@ -19,6 +19,7 @@ const { ingredientTypeDefs, ingredientResolver } = require("./ingredient/ingredi
 const { recipeTypeDefs, recipeResolver } = require("./recipe/recipe.index");
 const { transactionTypeDefs, transactionResolver } = require("./transaction/transaction.index");
 const { cartTypeDefs, cartResolver } = require("./cart/cart.index");
+const { favoriteTypeDefs, favoriteResolver } = require("./favorite/favorite.index");
 
 const ingredientListLoader = require("./recipe/recipe.loader");
 
@@ -35,7 +36,8 @@ const typeDefs = [
     ingredientTypeDefs,
     recipeTypeDefs,
     transactionTypeDefs,
-    cartTypeDefs
+    cartTypeDefs,
+    favoriteTypeDefs
 ];
 
 let resolvers = {};
@@ -45,7 +47,8 @@ resolvers = merge(
     ingredientResolver,
     recipeResolver,
     transactionResolver,
-    cartResolver
+    cartResolver,
+    favoriteResolver
     );
 
 let authMiddleware = {};
