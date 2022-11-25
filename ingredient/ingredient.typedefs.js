@@ -4,7 +4,8 @@ const typeDefs = gql`
     type Ingredient {
         _id : ID
         name : String
-        stock : Int
+        stock : Float
+        unit : String
         ingredient_status : ingredientStatus
     }
 
@@ -15,7 +16,7 @@ const typeDefs = gql`
 
     input IngredientFilter{
         name : String
-        stock : Int
+        stock : Float
         page : Int!
         limit : Int!
     }
@@ -31,8 +32,8 @@ const typeDefs = gql`
     }
 
     type Mutation{
-        createIngredient(name : String!, stock : Int!) : Ingredient
-        updateIngredient(_id : ID!, stock : Int!) : Ingredient
+        createIngredient(name : String!, stock : Float!, unit : String!) : Ingredient
+        updateIngredient(_id : ID!, stock : Int!, unit : String!) : Ingredient
         deleteIngredient(_id : ID!) : Ingredient
     }
 `;

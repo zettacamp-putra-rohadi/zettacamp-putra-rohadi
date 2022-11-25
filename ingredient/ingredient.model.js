@@ -6,7 +6,14 @@ const ingredientSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    stock: Number,
+    stock: {
+        type: Number,
+        required: true,
+    },
+    unit: {
+        type: String,
+        required: true,
+    },
     ingredient_status : {
         type: String,
         enum : ['ACTIVE', 'DELETED'],

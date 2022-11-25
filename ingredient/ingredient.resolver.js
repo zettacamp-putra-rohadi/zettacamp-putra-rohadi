@@ -3,7 +3,7 @@ const recipeModel = require('../recipe/recipe.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
-const createIngredient = async (parent, {name, stock}, context) => {
+const createIngredient = async (parent, {name, stock, unit}, context) => {
     const ingredient = await ingredientModel.findOne({name: name});
     if(ingredient && ingredient.ingredient_status === 'ACTIVE'){
         throw new GraphQLError('Nama Ingredient Telah Digunakan', {
@@ -15,6 +15,7 @@ const createIngredient = async (parent, {name, stock}, context) => {
     if(ingredient && ingredient.ingredient_status === 'DELETED'){
         const updateStatus = await ingredientModel.findOneAndUpdate({name: name}, {
             stock : stock,
+            unit : unit,
             ingredient_status: 'ACTIVE'
         }, {new: true});
         return updateStatus;
@@ -22,13 +23,14 @@ const createIngredient = async (parent, {name, stock}, context) => {
     const newIngredient = new ingredientModel({
         name: name,
         stock: stock,
+        unit: unit,
         ingredient_status: 'ACTIVE'
     });
     const result = await newIngredient.save();
     return result;
 }
 
-const updateIngredient = async (parent, {_id, stock}, context) => {
+const updateIngredient = async (parent, {_id, stock, unit}, context) => {
     if(stock < 0){
         throw new GraphQLError('Stock Tidak Boleh Kurang Dari 0', {
             extensions: {
@@ -52,7 +54,8 @@ const updateIngredient = async (parent, {_id, stock}, context) => {
         });
     }
     const result = await ingredientModel.findOneAndUpdate({_id: _id}, {
-        stock: stock
+        stock: stock,
+        unit: unit
     }, {new: true});
     return result;
 }
