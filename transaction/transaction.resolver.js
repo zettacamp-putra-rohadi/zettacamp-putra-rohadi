@@ -138,7 +138,12 @@ const getAllTransactions = async (parent, {filter}, context) => {
     let aggregate = [];
     let query = {$and: []};
     
-    aggregate.push({$match:{transaction_status: 'ACTIVE'}});
+    if (context.role === 'ADMIN') {
+        aggregate.push({$match:{transaction_status: 'ACTIVE'}});
+    } else {
+        aggregate.push({$match:{$and : [{user_id: mongoose.Types.ObjectId(context.user_id)}, {transaction_status: 'ACTIVE'}]}});
+    }
+
     if (filter.last_name_user){
         const lookup = {
             $lookup: {
@@ -198,7 +203,7 @@ const getAllTransactions = async (parent, {filter}, context) => {
             }
         });
     }
-
+    
     try {
         const transactions = await transactionModel.aggregate(aggregate);
         const total = transactions.length;
