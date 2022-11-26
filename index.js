@@ -4,11 +4,12 @@ const { ApolloServer, gql } = require("apollo-server-express");
 const { applyMiddleware } = require("graphql-middleware");
 const { makeExecutableSchema } = require("graphql-tools");
 const mongoose = require("mongoose");
+const db = require("./db");
 
 const app = express();
 const port = 4000;
 
-const mongodb = "mongodb://localhost:27017/mini_project_putra";
+const mongodb = db;
 mongoose.connect(mongodb, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const userAuthen = require("./middleware/auth");
