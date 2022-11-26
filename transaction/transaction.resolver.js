@@ -45,11 +45,6 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
             const result = await newTransaction.save();
             result.DeclineRecipe = validateData;
             return result;
-            // throw new GraphQLError('Stock Tidak Mencukupi', {
-            //     extensions: {
-            //         code: 400,
-            //     }
-            // });
         }
     } catch (error) {
         throw error;
@@ -115,16 +110,16 @@ function reduceingredientStock(ingredientsUsed) {
 const deleteTransaction = async (parent, {id}, context) => {
     const transaction = await transactionModel.findOne({_id: id});
     if(!transaction){
-        throw new GraphQLError('Transaction Tidak Ditemukan', {
+        throw new GraphQLError('Transaction not found', {
             extensions: {
-                code: 404,
+                code: "transaction/transaction-not-found",
             }
         });
     }
     if(transaction.transaction_status === 'DELETED'){
-        throw new GraphQLError('Transaction Tidak Ditemukan', {
+        throw new GraphQLError('Transaction not found', {
             extensions: {
-                code: 404,
+                code: "transaction/transaction-not-found",
             }
         });
     }
@@ -187,9 +182,9 @@ const getAllTransactions = async (parent, {filter}, context) => {
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
     } else {
-        throw new GraphQLError('Page harus diisi', {
+        throw new GraphQLError('Page required', {
             extensions: {
-                code: 400,
+                code: "transaction/page-required",
             }
         });
     }
@@ -197,9 +192,9 @@ const getAllTransactions = async (parent, {filter}, context) => {
     if (filter.limit !== null && filter.limit > 0) {
         aggregate.push({$limit: filter.limit});
     } else {
-        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+        throw new GraphQLError('Limit is required and greater than 0', {
             extensions: {
-                code: 400,
+                code: "transaction/limit-required",
             }
         });
     }
@@ -215,9 +210,9 @@ const getAllTransactions = async (parent, {filter}, context) => {
             total
         };
     } catch (error) {
-        throw new GraphQLError('Transaction Tidak Ditemukan', {
+        throw new GraphQLError('Transaction not found', {
             extensions: {
-                code: 404,
+                code: "transaction/transaction-not-found",
             }
         });
     }
@@ -234,24 +229,24 @@ const getOneTransaction = async (parent, {id}, context) => {
     try {
         const transaction = await transactionModel.aggregate(aggregate);
         if(transaction.length == 0){
-            throw new GraphQLError('Transaction Tidak Ditemukan', {
+            throw new GraphQLError('Transaction not found', {
                 extensions: {
-                    code: 404,
+                    code: "transaction/transaction-not-found",
                 }
             });
         }
         if(transaction.transaction_status == 'DELETED'){
-            throw new GraphQLError('Transaction Tidak Ditemukan', {
+            throw new GraphQLError('Transaction not found', {
                 extensions: {
-                    code: 404,
+                    code: "transaction/transaction-not-found",
                 }
             });
         }
         return transaction[0];
     } catch (error) {
-        throw new GraphQLError('Transaction Tidak Ditemukan', {
+        throw new GraphQLError('Transaction not found', {
             extensions: {
-                code: 404,
+                code: "transaction/transaction-not-found",
             }
         });
     }

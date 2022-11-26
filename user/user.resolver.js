@@ -75,9 +75,9 @@ const createUser = async function (parent, {user_input}, context){
 
     const user = await UserModel.findOne({email: user_input.email});
     if(user && user.user_status === 'ACTIVE'){
-        throw new GraphQLError('Email telah digunakan', {
+        throw new GraphQLError('Email has been used', {
             extensions: {
-                code: 404,
+                code: "user/email-has-been-used",
             }
         });
     } 
@@ -105,18 +105,18 @@ const loginUser = async (parent, {user_input}, context) => {
     const user = await UserModel.aggregate([{$match: {$and:[{email : user_input.email},{user_status : "ACTIVE"}]}}]);
     //check email
     if(user.length == 0){
-        throw new GraphQLError('Email atau Password Salah', {
+        throw new GraphQLError('Incorrect email or password', {
             extensions: {
-                code: 401,
+                code: "user/incorrect-email-or-password",
             }
         });
     }
     //check password
     const isPasswordValid = await bcrypt.compare(user_input.password, user[0].hashed_password);
     if(!isPasswordValid){
-        throw new GraphQLError('Email atau Password Salah', {
+        throw new GraphQLError('Incorrect email or password', {
             extensions: {
-                code: 401,
+                code: "user/incorrect-email-or-password",
             }
         });
     }
@@ -133,16 +133,16 @@ const loginUser = async (parent, {user_input}, context) => {
 const updateUser = async (parent, {_id, user_input}, context) => {
     const user = await UserModel.findOne({_id: _id});
     if(!user){
-        throw new GraphQLError('Email telah digunakan', {
+        throw new GraphQLError('Email has been used', {
             extensions: {
-                code: 409,
+                code: "user/email-has-been-used",
             }
         });
     }
     if(user.status === 'DELETED'){
-        throw new GraphQLError('User tidak ditemukan', {
+        throw new GraphQLError('User not found', {
             extensions: {
-                code: 404,
+                code: "user/user-not-found",
             }
         });
     }
@@ -164,9 +164,9 @@ const updateUser = async (parent, {_id, user_input}, context) => {
 const deleteUser = async (parent, {_id}, context) => {
     const user = await UserModel.findOne({_id: mongoose.Types.ObjectId(_id)});
     if(!user){
-        throw new GraphQLError('User tidak ditemukan', {
+        throw new GraphQLError('User not found', {
             extensions: {
-                code: 404,
+                code: "user/user-not-found",
             }
         });
     }
@@ -190,9 +190,9 @@ const getAllUsers = async (parent, {user_input}, context) => {
     if (user_input.page !== null) { 
         aggregate.push({$skip: user_input.page * user_input.limit});
     } else {
-        throw new GraphQLError('Page harus diisi', {
+        throw new GraphQLError('Page required', {
             extensions: {
-                code: 400,
+                code: "user/page-required",
             }
         });
     }
@@ -200,9 +200,9 @@ const getAllUsers = async (parent, {user_input}, context) => {
     if (user_input.limit !== null && user_input.limit > 0) {
         aggregate.push({$limit: user_input.limit});
     } else {
-        throw new GraphQLError('Limit harus diisi dan lebih besar dari 0', {
+        throw new GraphQLError('Limit is required and greater than 0', {
             extensions: {
-                code: 400,
+                code: "user/limit-required",
             }
         });
     }
@@ -218,9 +218,9 @@ const getAllUsers = async (parent, {user_input}, context) => {
             total
         };
     } catch (error) {
-        throw new GraphQLError('User tidak ditemukan', {
+        throw new GraphQLError('User not found', {
             extensions: {
-                code: 404,
+                code: "user/user-not-found",
             }
         });
     }
@@ -242,9 +242,9 @@ const getOneUser = async (parent, {_id, email}, context) => {
         }
         return user[0];
     } catch (error) {
-        throw new GraphQLError('User tidak ditemukan', {
+        throw new GraphQLError('User not found', {
             extensions: {
-                code: 404,
+                code: "user/user-not-found",
             }
         });
     }

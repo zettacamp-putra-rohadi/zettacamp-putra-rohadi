@@ -25,9 +25,9 @@ const getAllFavorites = async (parent, {page, limit}, context) => {
     if (page !== null) { 
         aggregate.push({$skip: page * limit});
     } else {
-        throw new GraphQLError('Page harus diisi', {
+        throw new GraphQLError('Page required', {
             extensions: {
-                code: 400,
+                code: "favorite/page-required",
             }
         });
     }
@@ -35,18 +35,29 @@ const getAllFavorites = async (parent, {page, limit}, context) => {
     if (limit !== null && limit > 0) {
         aggregate.push({$limit: limit});
     } else {
-        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+        throw new GraphQLError('Limit is required and greater than 0', {
             extensions: {
-                code: 400,
+                code: "favorite/limit-required",
             }
         });
     }
     
     const total = await favoriteModel.aggregate(aggregateCount).count('total');
-    const listFavorite = await favoriteModel.aggregate(aggregate);
-    return {
-        listFavorite,
-        total : total[0].total
+    try{
+        const listFavorite = await favoriteModel.aggregate(aggregate);
+        if(listFavorite.length == 0){
+            throw error;
+        }
+        return {
+            listFavorite,
+            total : total[0].total
+        }
+    }   catch (error) {
+        throw new GraphQLError('Favorite not found', {
+            extensions: {
+                code: "favorite/favorite-not-found",
+            }
+        });
     }
 }
 
@@ -66,9 +77,9 @@ const getOneFavorite = async (parent, {_id}, context) => {
         console.log(favorite[0]);
         return favorite[0];
     } catch (error) {
-        throw new GraphQLError('Favorite Tidak Ditemukan', {
+        throw new GraphQLError('Favorite not found', {
             extensions: {
-                code: 404,
+                code: "favorite/favorite-not-found",
             }
         });
     }
@@ -92,9 +103,9 @@ const deleteFavorite = async (parent, {_id}, context) => {
         }, {new: true});
         return result;
     } catch (error) {
-        throw new GraphQLError('Favorite Tidak Ditemukan', {
+        throw new GraphQLError('Favorite not found', {
             extensions: {
-                code: 404,
+                code: "favorite/favorite-not-found",
             }
         });
     }

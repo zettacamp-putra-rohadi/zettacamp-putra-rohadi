@@ -23,7 +23,7 @@ const createCart = async (parent, {menu}, context) => {
         },
         {upsert: true}
     );
-    return {status: 'Cart berhasil ditambahkan'};
+    return {status: 'Cart added successfully'};
     } catch (error) {
         throw new Error(error);
     }
@@ -35,16 +35,16 @@ const updateCart = async (parent, {menu}, context) => {
     let amount = menu.amount;
     const cart = await cartModel.findOne({user_id: userId, recipe_id : recipeId, cart_status : 'ACTIVE'});
     if(!cart){
-        throw new GraphQLError('Cart Tidak Ditemukan', {
+        throw new GraphQLError('Cart not found', {
             extensions: {
-                code: 404,
+                code: "cart/cart-not-found",
             }
         });
     }
     if(cart.cart_status === 'DELETED'){
-        throw new GraphQLError('Cart Tidak Ditemukan', {
+        throw new GraphQLError('Cart not found', {
             extensions: {
-                code: 404,
+                code: "cart/cart-not-found",
             }
         });
     }
@@ -62,9 +62,9 @@ const updateCart = async (parent, {menu}, context) => {
 const deleteCart = async (parent, {_id}, context) => {
     const cart = await cartModel.findOne({_id: mongoose.Types.ObjectId(_id)});
     if(!cart){
-        throw new GraphQLError('Cart Tidak Ditemukan', {
+        throw new GraphQLError('Cart not found', {
             extensions: {
-                code: 404,
+                code: "cart/cart-not-found",
             }
         });
     }
@@ -86,9 +86,9 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     if (page !== null) { 
         aggregate.push({$skip: page * limit});
     } else {
-        throw new GraphQLError('Page harus diisi', {
+        throw new GraphQLError('Page required', {
             extensions: {
-                code: 400,
+                code: "cart/page-required",
             }
         });
     }
@@ -96,9 +96,9 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     if (limit !== null && limit > 0) {
         aggregate.push({$limit: limit});
     } else {
-        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+        throw new GraphQLError('Limit is required and greater than 0', {
             extensions: {
-                code: 400,
+                code: "cart/limit-required",
             }
         });
     }
@@ -122,9 +122,9 @@ const getAllCarts = async (parent, {page, limit}, context) => {
             totalPrice : totalPrice
         };
     } catch (error) {
-        throw new GraphQLError('Cart Tidak Ditemukan', {
+        throw new GraphQLError('Cart not found', {
             extensions: {
-                code: 404,
+                code: "cart/cart-not-found",
             }
         });
     }
@@ -138,9 +138,9 @@ const getOneCart = async (parent, {id}, context) => {
         }
         return cart;
     } catch (error) {
-        throw new GraphQLError('Cart Tidak Ditemukan', {
+        throw new GraphQLError('Cart not found', {
             extensions: {
-                code: 404,
+                code: "cart/cart-not-found",
             }
         });
     }

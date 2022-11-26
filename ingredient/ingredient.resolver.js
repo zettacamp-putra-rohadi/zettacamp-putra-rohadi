@@ -6,9 +6,9 @@ const {GraphQLError} = require('graphql');
 const createIngredient = async (parent, {name, stock, unit}, context) => {
     const ingredient = await ingredientModel.findOne({name: name});
     if(ingredient && ingredient.ingredient_status === 'ACTIVE'){
-        throw new GraphQLError('Nama Ingredient Telah Digunakan', {
+        throw new GraphQLError('Name of ingredient already used', {
             extensions: {
-                code: 409,
+                code: "ingredient/name-already-used",
             }
         });
     }
@@ -32,24 +32,24 @@ const createIngredient = async (parent, {name, stock, unit}, context) => {
 
 const updateIngredient = async (parent, {_id, stock, unit}, context) => {
     if(stock < 0){
-        throw new GraphQLError('Stock Tidak Boleh Kurang Dari 0', {
+        throw new GraphQLError('Stock Cannot Be Less Than 0', {
             extensions: {
-                code: 400,
+                code: "ingredient/stock-cannot-less-than-0",
             }
         });
     }
     const ingredient = await ingredientModel.findOne({_id: _id});
     if(!ingredient){
-        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+        throw new GraphQLError('Ingredient not found', {
             extensions: {
-                code: 404,
+                code: "ingredient/ingredient-not-found",
             }
         });
     }
     if(ingredient.ingredient_status === 'DELETED'){
-        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+        throw new GraphQLError('Ingredient not found', {
             extensions: {
-                code: 404,
+                code: "ingredient/ingredient-not-found",
             }
         });
     }
@@ -64,23 +64,23 @@ const deleteIngredient = async (parent, {_id}, context) => {
     const ingredient = await ingredientModel.findOne({_id: _id});
     const checkRecipe = await recipeModel.find({ingredients: {$elemMatch: {ingredient_id: _id}}},{recipe_status:'ACTIVE'});
     if(!ingredient){
-        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+        throw new GraphQLError('Ingredient not found', {
             extensions: {
-                code: 404,
+                code: "ingredient/ingredient-not-found",
             }
         });
     }
     if(ingredient.ingredient_status === 'DELETED'){
-        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+        throw new GraphQLError('Ingredient not found', {
             extensions: {
-                code: 404,
+                code: "ingredient/ingredient-not-found",
             }
         });
     }
     if(checkRecipe.length > 0){
-        throw new GraphQLError('Ingredient Masih Digunakan Diresep', {
+        throw new GraphQLError('Ingredients Still Used In Recipes', {
             extensions: {
-                code: 409,
+                code: "ingredient/ingredient-still-used-in-recipes",
             }
         });
     }
@@ -102,9 +102,9 @@ const getAllIngredients = async (parent, {filter}, context) => {
         if (filter.stock > 0) {
             query.$and.push({stock: {$gte: filter.stock}});
         } else {
-            throw new GraphQLError('Stock harus lebih dari 0', {
+            throw new GraphQLError('Stock Cannot Be Less Than 0', {
                 extensions: {
-                    code: 400,
+                    code: "ingredient/stock-cannot-less-than-0",
                 }
             });
         }
@@ -115,9 +115,9 @@ const getAllIngredients = async (parent, {filter}, context) => {
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
     } else {
-        throw new GraphQLError('Page harus diisi', {
+        throw new GraphQLError('Page required', {
             extensions: {
-                code: 400,
+                code: "ingredient/page-required",
             }
         });
     }
@@ -125,9 +125,9 @@ const getAllIngredients = async (parent, {filter}, context) => {
     if (filter.limit !== null && filter.limit > 0) {
         aggregate.push({$limit: filter.limit});
     } else {
-        throw new GraphQLError('limit harus diisi dan lebih dari 0', {
+        throw new GraphQLError('Limit is required and greater than 0', {
             extensions: {
-                code: 400,
+                code: "ingredient/limit-required",
             }
         });
     }
@@ -143,9 +143,9 @@ const getAllIngredients = async (parent, {filter}, context) => {
             total
         };
     } catch (error) {
-        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+        throw new GraphQLError('Ingredient not found', {
             extensions: {
-                code: 404,
+                code: "ingredient/ingredient-not-found",
             }
         });
     }
@@ -164,9 +164,9 @@ const getOneIngredient = async (parent, {_id}, context) => {
         }
         return ingredient[0];
     } catch (error) {
-        throw new GraphQLError('Ingredient Tidak Ditemukan', {
+        throw new GraphQLError('Ingredient not found', {
             extensions: {
-                code: 404,
+                code: "ingredient/ingredient-not-found",
             }
         });
     }

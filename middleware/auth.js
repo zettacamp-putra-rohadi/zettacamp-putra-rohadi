@@ -5,9 +5,9 @@ const UserModel = require('../user/user.model');
 const userAuth = async function (resolver, parent, ags, context){
     const token = context.req.get('Authorization');
     if(!token){
-        throw new GraphQLError('Anda belum login', {
+        throw new GraphQLError('You are not logged in', {
             extensions: {
-                code: 403,
+                code: "auth/not-logged-in",
             }
         });
     }
@@ -18,9 +18,9 @@ const userAuth = async function (resolver, parent, ags, context){
         context.token = token;
         return resolver();
     }catch(err){
-        throw new GraphQLError('Token Salah', {
+        throw new GraphQLError('Wrong token', {
             extensions: {
-                code: 401,
+                code: "auth/wrong-token",
             }
         });
     }

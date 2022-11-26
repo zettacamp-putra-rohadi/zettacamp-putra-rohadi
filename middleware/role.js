@@ -2,9 +2,9 @@ const {GraphQLError} = require('graphql');
 
 const verifRole = async function (resolver, parent, ags, context){
     if(context.role !== 'ADMIN'){
-        throw new GraphQLError('Anda Bukan Admin!', {
+        throw new GraphQLError('You are not an admin!', {
             extensions: {
-                code: 403,
+                code: "role/you-not-admin",
             }
         });
     }
