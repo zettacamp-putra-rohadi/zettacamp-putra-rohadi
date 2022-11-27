@@ -85,7 +85,15 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     }
     aggregate.push({$match: query});
 
-    const total = await cartModel.aggregate(aggregate).count('total');
+    const getCarts = await cartModel.aggregate(aggregate);
+    const total = getCarts.length;
+    let totalPrice = 0;
+
+    //calculate total price
+    for (data of getCarts){
+        const recipe = await recipeModel.findById(data.recipe_id);
+        totalPrice += recipe.price * data.amount;
+    }
     
     if (page !== null) { 
         aggregate.push({$skip: page * limit});
@@ -108,20 +116,14 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     }
     try {
         const carts = await cartModel.aggregate(aggregate);
-        let totalPrice = 0;
         
         if(carts.length == 0){
             throw error;
         }
-
-        for (data of carts){
-            const recipe = await recipeModel.findById(data.recipe_id);
-            totalPrice += recipe.price * data.amount;
-        }
         
         return {
             listCart : carts,
-            total : total[0].total,
+            total : total,
             totalPrice : totalPrice
         };
     } catch (error) {
