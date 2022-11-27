@@ -76,12 +76,16 @@ const deleteCart = async (parent, {_id}, context) => {
 const getAllCarts = async (parent, {page, limit}, context) => {
     let aggregate = [];
     let query = {$and: []};
-    //user id dr token
+
     query.$and.push({cart_status: {$eq: 'ACTIVE'}});
+    
+    //user id dr token
     if (context.role === 'USER') {
         query.$and.push({user_id: mongoose.Types.ObjectId(context.user_id)});
     }
     aggregate.push({$match: query});
+
+    const total = await cartModel.aggregate(aggregate).count('total');
     
     if (page !== null) { 
         aggregate.push({$skip: page * limit});
@@ -104,7 +108,6 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     }
     try {
         const carts = await cartModel.aggregate(aggregate);
-        const total = carts.length;
         let totalPrice = 0;
         
         if(carts.length == 0){
@@ -118,7 +121,7 @@ const getAllCarts = async (parent, {page, limit}, context) => {
         
         return {
             listCart : carts,
-            total : total,
+            total : total[0].total,
             totalPrice : totalPrice
         };
     } catch (error) {

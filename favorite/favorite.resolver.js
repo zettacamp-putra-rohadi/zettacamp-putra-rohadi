@@ -4,24 +4,24 @@ const {GraphQLError} = require('graphql');
 
 const getAllFavorites = async (parent, {page, limit}, context) => {
     let aggregate = [];
-    let aggregateCount = [];
 
     if (context.role !== 'ADMIN') {
-        aggregateCount.push({ 
+        aggregate.push({ 
             $match : { $and: [
                 {user_id: mongoose.Types.ObjectId(context.user_id)},
                 {favorite_status: {$eq: 'ACTIVE'}}
             ] }
         });
     } else {
-        aggregateCount.push({ 
+        aggregate.push({ 
             $match : { $and: [
                 {favorite_status: {$eq: 'ACTIVE'}}
             ] }
         });
     }
-
-    aggregate.push(aggregateCount[0]);
+    
+    const total = await favoriteModel.aggregate(aggregate).count('total');
+    
     if (page !== null) { 
         aggregate.push({$skip: page * limit});
     } else {
@@ -42,7 +42,6 @@ const getAllFavorites = async (parent, {page, limit}, context) => {
         });
     }
     
-    const total = await favoriteModel.aggregate(aggregateCount).count('total');
     try{
         const listFavorite = await favoriteModel.aggregate(aggregate);
         if(listFavorite.length == 0){

@@ -179,6 +179,8 @@ const getAllTransactions = async (parent, {filter}, context) => {
         aggregate.push({$match: query});
     }
 
+    const total = await transactionModel.aggregate(aggregate).count('total');
+
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
     } else {
@@ -201,13 +203,12 @@ const getAllTransactions = async (parent, {filter}, context) => {
     
     try {
         const transactions = await transactionModel.aggregate(aggregate);
-        const total = transactions.length;
         if(transactions.length == 0){
             throw error;
         }
         return {
             listTransaction: transactions,
-            total
+            total : total[0].total
         };
     } catch (error) {
         throw new GraphQLError('Transaction not found', {

@@ -112,6 +112,8 @@ const getAllIngredients = async (parent, {filter}, context) => {
 
     aggregate.push({$match: query});
 
+    const total = await ingredientModel.aggregate(aggregate).count('total');
+
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
     } else {
@@ -134,13 +136,12 @@ const getAllIngredients = async (parent, {filter}, context) => {
 
     try {
         const ingredients = await ingredientModel.aggregate(aggregate);
-        const total = ingredients.length;
         if(ingredients.length == 0){
             throw error;
         }
         return {
             listIngredient: ingredients,
-            total
+            total : total[0].total
         };
     } catch (error) {
         throw new GraphQLError('Ingredient not found', {

@@ -167,6 +167,8 @@ const getAllRecipesPublic = async (parent, {filter}, context) => {
     filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
 
     aggregate.push({$match: query});
+
+    const total = await recipeModel.aggregate(aggregate).count('total');
     
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
@@ -190,13 +192,12 @@ const getAllRecipesPublic = async (parent, {filter}, context) => {
 
     try {
         const recipes = await recipeModel.aggregate(aggregate);
-        const total = recipes.length;
         if(recipes.length == 0){
             throw error
         }
         return {
             listRecipe: recipes,
-            total
+            total : total[0].total
         };
     } catch (error) {
         throw new GraphQLError('Recipe not found', {

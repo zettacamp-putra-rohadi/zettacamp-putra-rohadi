@@ -186,6 +186,8 @@ const getAllUsers = async (parent, {user_input}, context) => {
     user_input.email ? query.$and.push({email: user_input.email}) : null;
     
     aggregate.push({$match: query});
+
+    const total = await UserModel.aggregate(aggregate).count('total');
     
     if (user_input.page !== null) { 
         aggregate.push({$skip: user_input.page * user_input.limit});
@@ -209,13 +211,12 @@ const getAllUsers = async (parent, {user_input}, context) => {
 
     try {
         const users = await UserModel.aggregate(aggregate);
-        const total = users.length;
         if(users.length == 0){
             throw error;
         }
         return {
             users,
-            total
+            total : total[0].total
         };
     } catch (error) {
         throw new GraphQLError('User not found', {
