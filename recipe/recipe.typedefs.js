@@ -6,8 +6,11 @@ const typeDefs = gql`
         name: String
         picture: String
         price: Float
+        discount: Float
+        price_after_discount: Float
         ingredients: [ListIngredient]
         recipe_status: recipeStatus
+        discount_status: discountStatus
     }
 
     type GetRecipe {
@@ -15,8 +18,11 @@ const typeDefs = gql`
         name: String
         picture: String
         price: Float
+        discount: Float
+        price_after_discount: Float
         ingredients: [ListIngredient]
         recipe_status: recipeStatus
+        discount_status: discountStatus
         availableStock : Int
     }
 
@@ -53,6 +59,11 @@ const typeDefs = gql`
         UNPUBLISH
     }
 
+    enum discountStatus {
+        ACTIVE
+        INACTIVE
+    }
+
     type Query {
         getAllRecipes(filter: filterRecipe): RecipesResult
         getAllRecipesPublic(filter: filterRecipe): RecipesResult
@@ -60,8 +71,8 @@ const typeDefs = gql`
     }
 
     type Mutation {
-        createRecipe(name: String!, picture: String!, price: Float!, ingredients: [IngredientInput]!): Recipe
-        updateRecipe(_id: ID!, name: String, picture: String, price: Float, ingredients: [IngredientInput]!): Recipe
+        createRecipe(name: String!, picture: String!, price: Float!, discount: Float ingredients: [IngredientInput]!, discount_status: discountStatus!): Recipe
+        updateRecipe(_id: ID!, name: String, picture: String, price: Float!, discount: Float, ingredients: [IngredientInput]!, discount_status: discountStatus!): Recipe
         deleteRecipe(_id: ID!): Recipe
         updateRecipeStatus(_id: ID!, recipe_status: recipeStatusInput!): Recipe
     }

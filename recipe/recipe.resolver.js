@@ -3,19 +3,34 @@ const ingredientModel = require('../ingredient/ingredient.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
-const createRecipe = async (parent, {name, picture, price, ingredients}, context) => {
+const createRecipe = async (parent, {name, picture, price, discount, ingredients, discount_status}, context) => {
+    let priceAfterDiscount = null;
+    if(discount_status === 'ACTIVE') {
+        if(discount < 0 || discount > 100){
+            throw new GraphQLError('Discount must be between 0 and 100', {
+                extensions: {
+                    code: "recipe/discount-must-be-between-0-and-100",
+                }
+            });
+        } else {
+            priceAfterDiscount = price - (price * discount / 100);
+        }
+    }
     const newRecipe = new recipeModel({
         name,
         picture,
         price,
+        discount,
+        price_after_discount : priceAfterDiscount,
         ingredients,
-        recipe_status: "UNPUBLISH"
+        recipe_status: "UNPUBLISH",
+        discount_status: discount_status
     });
     const result = await newRecipe.save();
     return result;
 }
 
-const updateRecipe = async (parent, {_id, name, picture, price, ingredients}, context) => {
+const updateRecipe = async (parent, {_id, name, picture, price, discount, ingredients, discount_status}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
     if(!recipe){
         throw new GraphQLError('Recipe not found', {
@@ -39,13 +54,29 @@ const updateRecipe = async (parent, {_id, name, picture, price, ingredients}, co
         });
     }
 
-    let queryUpdate = {};
-    
+    let queryUpdate = {
+        price : price,
+        discount_status : discount_status
+    };
+
     name ? queryUpdate.name = name : null;
     picture ? queryUpdate.picture = picture : null;
-    price ? queryUpdate.price = price : null;
     ingredients ? queryUpdate.ingredients = ingredients : null;
 
+    let priceAfterDiscount = 0;
+    if(discount_status === 'ACTIVE') {
+        if(discount < 0 || discount > 100){
+            throw new GraphQLError('Discount must be between 0 and 100', {
+                extensions: {
+                    code: "recipe/discount-must-be-between-0-and-100",
+                }
+            });
+        } else {
+            queryUpdate.discount = discount;
+            priceAfterDiscount = price - (price * discount / 100);
+            queryUpdate.price_after_discount = priceAfterDiscount;
+        }
+    }
     const result = await recipeModel.findByIdAndUpdate(_id, queryUpdate, {new: true});
     return result;
 }
