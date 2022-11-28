@@ -7,6 +7,7 @@ const typeDefs = gql`
         stock : Float
         unit : String
         ingredient_status : ingredientStatus
+        list_recipe : [String]
     }
 
     enum ingredientStatus{

@@ -134,8 +134,33 @@ const getAllIngredients = async (parent, {filter}, context) => {
         });
     }
 
+    //add new field list of recipes that use the ingredient
+    aggregate.push( { $addFields : {list_recipe : []} } );
+
     try {
         const ingredients = await ingredientModel.aggregate(aggregate);
+        const recipes = await recipeModel.aggregate([
+            {$match: {recipe_status: 'ACTIVE'}},
+            {$project: {
+                _id: 1,
+                name: 1,
+                ingredients: 1
+            }}
+        ]);
+
+        //check ingredient in recipe
+        for (const [index, ingredient] of ingredients.entries()) {
+            for (recipe of recipes) {
+                for (recipeIngredient of recipe.ingredients) {
+                if (ingredient._id.toString() === recipeIngredient.ingredient_id.toString()) {
+                    ingredients[index].list_recipe.push(recipe.name);
+                }
+                }
+            }
+        }
+        
+        console.log(ingredients);
+
         if(ingredients.length == 0){
             throw error;
         }
