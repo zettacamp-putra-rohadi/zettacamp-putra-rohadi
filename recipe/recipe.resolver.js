@@ -136,6 +136,14 @@ const updateOfferStatus = async (parent, {_id, offer_status}, context) => {
         });
     }
 
+    if(recipe.discount_status === 'INACTIVE'){
+        throw new GraphQLError('Recipe discount are inactive', {
+            extensions: {
+                code: "recipe/recipe-discount-inactive",
+            }
+        });
+    }
+
     //count total recipe with offer_status "ACTIVE"
     let totalDataOffterStatusActive = 0;
     for (data of recipes){
