@@ -19,6 +19,11 @@ const recipeSchema = new mongoose.Schema({
         type: String,
         enum: ["ACTIVE", "INACTIVE"],
         default: "ACTIVE"
+    },
+    offer_status: {
+        type: String,
+        enum: ["ACTIVE", "INACTIVE"],
+        default: "INACTIVE"
     }
 });
 

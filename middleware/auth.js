@@ -59,5 +59,6 @@ module.exports = {
         deleteCart: userAuth,
         createFavorite: userAuth,
         deleteFavorite: userAuth,
+        updateOfferStatus: userAuth,
     }
 };

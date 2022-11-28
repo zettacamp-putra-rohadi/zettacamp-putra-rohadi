@@ -11,6 +11,7 @@ const typeDefs = gql`
         ingredients: [ListIngredient]
         recipe_status: recipeStatus
         discount_status: discountStatus
+        offer_status: offerStatus
     }
 
     type GetRecipe {
@@ -23,6 +24,7 @@ const typeDefs = gql`
         ingredients: [ListIngredient]
         recipe_status: recipeStatus
         discount_status: discountStatus
+        offer_status: offerStatus
         availableStock : Int
     }
 
@@ -64,6 +66,11 @@ const typeDefs = gql`
         INACTIVE
     }
 
+    enum offerStatus {
+        ACTIVE
+        INACTIVE
+    }
+
     type Query {
         getAllRecipes(filter: filterRecipe): RecipesResult
         getAllRecipesPublic(filter: filterRecipe): RecipesResult
@@ -76,6 +83,7 @@ const typeDefs = gql`
         updateRecipe(_id: ID!, name: String, picture: String, price: Float!, discount: Float, ingredients: [IngredientInput]!, discount_status: discountStatus!): Recipe
         deleteRecipe(_id: ID!): Recipe
         updateRecipeStatus(_id: ID!, recipe_status: recipeStatusInput!): Recipe
+        updateOfferStatus(_id: ID!, offer_status: offerStatus!): Recipe
     }
 `;
 module.exports = typeDefs;

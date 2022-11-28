@@ -33,20 +33,14 @@ const createRecipe = async (parent, {name, picture, price, discount, ingredients
 
 const updateRecipe = async (parent, {_id, name, picture, price, discount, ingredients, discount_status}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
-    if(!recipe){
+    if(!recipe || recipe.recipe_status === 'DELETED'){
         throw new GraphQLError('Recipe not found', {
             extensions: {
                 code: "recipe/recipe-not-found",
             }
         });
     }
-    if(recipe.recipe_status === 'DELETED'){
-        throw new GraphQLError('Recipe not found', {
-            extensions: {
-                code: "recipe/recipe-not-found",
-            }
-        });
-    }
+
     if(recipe.recipe_status === 'ACTIVE'){
         throw new GraphQLError('Recipe are still used', {
             extensions: {
@@ -84,20 +78,14 @@ const updateRecipe = async (parent, {_id, name, picture, price, discount, ingred
 
 const deleteRecipe = async (parent, {_id}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
-    if(!recipe){
+    if(!recipe || recipe.recipe_status === 'DELETED'){
         throw new GraphQLError('Recipe not found', {
             extensions: {
                 code: "recipe/recipe-not-found",
             }
         });
     }
-    if(recipe.recipe_status === 'DELETED'){
-        throw new GraphQLError('Recipe not found', {
-            extensions: {
-                code: "recipe/recipe-not-found",
-            }
-        });
-    }
+
     if(recipe.recipe_status === 'ACTIVE'){
         throw new GraphQLError('Recipe are still used', {
             extensions: {
@@ -105,6 +93,7 @@ const deleteRecipe = async (parent, {_id}, context) => {
             }
         });
     }
+
     const result = await recipeModel.findOneAndUpdate({_id: _id}, {
         recipe_status: 'DELETED'
     }, {new: true});
@@ -113,27 +102,61 @@ const deleteRecipe = async (parent, {_id}, context) => {
 
 const updateRecipeStatus = async (parent, {_id, recipe_status}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
-    if(!recipe){
+    if(!recipe || recipe.recipe_status === 'DELETED'){
         throw new GraphQLError('Recipe not found', {
             extensions: {
                 code: "recipe/recipe-not-found",
             }
         });
     }
-    if(recipe_status === 'UNPUBLISH'){
-        const result = await recipeModel.findOneAndUpdate({_id: _id}, {
-            recipe_status: 'UNPUBLISH'
-        }, {new: true});
-        return result;
-    }
-    if(recipe_status === 'ACTIVE'){
-        const result = await recipeModel.findOneAndUpdate({_id: _id}, {
-            recipe_status: 'ACTIVE'
-        }, {new: true});
-        return result;
-    }
+
+    const result = await recipeModel.findOneAndUpdate({_id: _id}, {
+        recipe_status: recipe_status
+    }, {new: true});
+    return result;
 }
 
+const updateOfferStatus = async (parent, {_id, offer_status}, context) => {
+    const recipe = await recipeModel.findById(_id);
+    const recipes = await recipeModel.find({recipe_status: { $in : ["ACTIVE", "UNPUBLISH"]}});
+    
+    if(!recipe || recipe.recipe_status === 'DELETED'){
+        throw new GraphQLError('Recipe not found', {
+            extensions: {
+                code: "recipe/recipe-not-found",
+            }
+        });
+    }
+
+    if(recipe.recipe_status === 'ACTIVE'){
+        throw new GraphQLError('Recipe are still used', {
+            extensions: {
+                code: "recipe/recipe-still-used",
+            }
+        });
+    }
+
+    //count total recipe with offer_status "ACTIVE"
+    let totalDataOffterStatusActive = 0;
+    for (data of recipes){
+        if(data.offer_status === 'ACTIVE'){
+            totalDataOffterStatusActive++;
+        }
+    }
+
+    if (totalDataOffterStatusActive < 3){
+        const result = await recipeModel.findOneAndUpdate({_id: _id}, {
+            offer_status: offer_status
+        }, {new: true});
+        return result;
+    } else {
+        throw new GraphQLError('Recipe offers cannot be more than 3', {
+            extensions: {
+                code: "recipe/recipe-offer-cannot-be-more-than-3",
+            }
+        });
+    }
+}
 
 const getAllRecipes = async (parent, {filter}, context) => {
     let aggregate = [];
@@ -332,6 +355,7 @@ module.exports = {
         updateRecipe,
         deleteRecipe,
         updateRecipeStatus,
+        updateOfferStatus,
     },
     ListIngredient :{
         ingredient_id: getIngredientLoader
