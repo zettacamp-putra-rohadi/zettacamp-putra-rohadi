@@ -158,8 +158,6 @@ const getAllIngredients = async (parent, {filter}, context) => {
                 }
             }
         }
-        
-        console.log(ingredients);
 
         if(ingredients.length == 0){
             throw error;
