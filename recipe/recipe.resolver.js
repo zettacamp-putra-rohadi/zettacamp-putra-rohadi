@@ -1,5 +1,6 @@
 const recipeModel = require('./recipe.model');
 const ingredientModel = require('../ingredient/ingredient.model');
+const transactionModel = require('../transaction/transaction.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
@@ -267,6 +268,44 @@ const getOneRecipe = async (parent, {_id}, context) => {
     }
 }
 
+const getTop3Recipes = async (parent, args, context) => {
+    const listRecipe = await recipeModel.aggregate([
+        {$match: {recipe_status: 'ACTIVE'}},
+        {$project: {_id: 1}}
+    ]);
+    const listTransaction = await transactionModel.aggregate([
+        {$match: {order_status: 'SUCCESS', transaction_status: 'ACTIVE'}},
+        {$project: {"menu.recipe_id": 1}}
+    ]);
+
+    let amountOfEachRecipe = [];
+    //count how many times each "recipe" has been purchased
+    for (recipe of listRecipe){
+        let amount = 0;
+        for (data of listTransaction){
+          for (menu of data.menu){
+            if (menu.recipe_id.toString() == recipe._id.toString()){
+              amount++;
+            }
+          }
+        }
+        amountOfEachRecipe.push({recipe_id : recipe._id, amount : amount});
+      }
+    
+    //sort by most purchased recipe (amount) and get top 3
+    const getTop3 = (data, n) => {
+        return data.sort((a, b) => b.amount - a.amount).slice(0, n);
+    };
+    const dataRecipes = getTop3(amountOfEachRecipe, 3);
+
+    let top3Recipes = [];
+    for (data of dataRecipes){
+        let recipeData = await recipeModel.findById(data.recipe_id);
+        top3Recipes.push(recipeData);
+    }
+    return top3Recipes;
+}
+
 const getIngredientLoader = async function (parent, args, context) {
     if (parent.ingredient_id) {
         return await context.ingredientListLoader.load(parent.ingredient_id);}
@@ -285,7 +324,8 @@ module.exports = {
     Query : {
         getAllRecipes,
         getOneRecipe,
-        getAllRecipesPublic
+        getAllRecipesPublic,
+        getTop3Recipes
     },
     Mutation : {
         createRecipe,
