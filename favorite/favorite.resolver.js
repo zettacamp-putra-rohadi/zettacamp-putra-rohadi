@@ -111,7 +111,9 @@ const deleteFavorite = async (parent, {_id}, context) => {
 
 const getRecipeLoader = async (parent, args, context) => {
     if(parent.recipe_id){
-        return await context.favoriteRecipeLoader.load(parent.recipe_id);
+        const recipe = await context.favoriteRecipeLoader.load(parent.recipe_id);
+        recipe.is_favorite = true;
+        return recipe;
     }
 }
 
