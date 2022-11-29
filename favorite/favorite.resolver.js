@@ -90,10 +90,16 @@ const createFavorite = async (parent, {recipe_id}, context) => {
 
 const deleteFavorite = async (parent, {_id}, context) => {
     try {
+        const favorite = await favoriteModel.findOne({_id: _id, favorite_status: 'ACTIVE'});
+        if(!favorite){
+            throw error;
+        }
+
         const result = await favoriteModel.findOneAndUpdate({_id: _id}, {
             favorite_status: 'DELETED'
         }, {new: true});
         return result;
+        
     } catch (error) {
         throw new GraphQLError('Favorite not found', {
             extensions: {

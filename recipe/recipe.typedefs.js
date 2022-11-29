@@ -12,6 +12,7 @@ const typeDefs = gql`
         recipe_status: recipeStatus
         discount_status: discountStatus
         is_favorite: Boolean
+        favorite_id: ID
         offer_status: offerStatus
     }
 
@@ -27,6 +28,7 @@ const typeDefs = gql`
         discount_status: discountStatus
         offer_status: offerStatus
         is_favorite: Boolean
+        favorite_id: ID
         availableStock : Int
     }
 

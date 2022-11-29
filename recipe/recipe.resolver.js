@@ -219,9 +219,11 @@ const getAllRecipes = async (parent, {filter}, context) => {
             //check if the recipe is favorite by user who login or not
             for (const [index, recipe] of recipes.entries()) {
                 recipes[index].is_favorite = false;
+                recipes[index].favorite_id = null;
                 for (favoriteRecipe of favorite) {
                     if (recipe._id.toString() === favoriteRecipe.recipe_id.toString()) {
                         recipes[index].is_favorite = true;
+                        recipes[index].favorite_id = favoriteRecipe._id;
                     }
                 }
             }
