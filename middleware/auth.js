@@ -41,6 +41,7 @@ module.exports = {
         getOneCart: userAuth,
         getAllFavorites : userAuth,
         getOneFavorite : userAuth,
+        getAllRatings : userAuth,
     },
     Mutation: {
         updateUser: userAuth,
@@ -60,5 +61,6 @@ module.exports = {
         createFavorite: userAuth,
         deleteFavorite: userAuth,
         updateOfferStatus: userAuth,
+        createRating: userAuth,
     }
 };
