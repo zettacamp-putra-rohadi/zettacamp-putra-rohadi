@@ -215,7 +215,7 @@ const getAllRecipes = async (parent, {filter}, context) => {
         //check if "USER" login
         if (context.role === 'USER') {
             //get favorite by user who login
-            const favorite = await favoriteModel.find({user_id: context.user_id});
+            const favorite = await favoriteModel.find({user_id: context.user_id, favorite_status: 'ACTIVE'});
             //check if the recipe is favorite by user who login or not
             for (const [index, recipe] of recipes.entries()) {
                 recipes[index].is_favorite = false;
@@ -313,7 +313,7 @@ const getOneRecipe = async (parent, {_id}, context) => {
         //check if "USER" login
         if (context.role === 'USER') {
             //get favorite by user who login
-            const favorite = await favoriteModel.find({user_id: context.user_id});
+            const favorite = await favoriteModel.find({user_id: context.user_id, favorite_status: 'ACTIVE'});
             //check if the recipe is favorite by user who login or not
             recipe[0].is_favorite = false;
             recipe[0].favorite_id = null;
