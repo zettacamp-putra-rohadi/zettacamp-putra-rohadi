@@ -316,9 +316,11 @@ const getOneRecipe = async (parent, {_id}, context) => {
             const favorite = await favoriteModel.find({user_id: context.user_id});
             //check if the recipe is favorite by user who login or not
             recipe[0].is_favorite = false;
+            recipes[0].favorite_id = null;
             for (favoriteRecipe of favorite) {
                 if (recipe[0]._id.toString() === favoriteRecipe.recipe_id.toString()) {
                     recipe[0].is_favorite = true;
+                    recipes[0].favorite_id = favoriteRecipe._id;
                 }
             }
         }
