@@ -11,6 +11,7 @@ const typeDefs = gql`
         ingredients: [ListIngredient]
         recipe_status: recipeStatus
         discount_status: discountStatus
+        is_favorite: Boolean
         offer_status: offerStatus
     }
 
@@ -25,6 +26,7 @@ const typeDefs = gql`
         recipe_status: recipeStatus
         discount_status: discountStatus
         offer_status: offerStatus
+        is_favorite: Boolean
         availableStock : Int
     }
 

@@ -1,6 +1,7 @@
 const recipeModel = require('./recipe.model');
 const ingredientModel = require('../ingredient/ingredient.model');
 const transactionModel = require('../transaction/transaction.model');
+const favoriteModel = require('../favorite/favorite.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
@@ -182,6 +183,8 @@ const getAllRecipes = async (parent, {filter}, context) => {
     filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
 
     aggregate.push({$match: query});
+
+    const total = await recipeModel.aggregate(aggregate).count('total');
     
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
@@ -202,16 +205,31 @@ const getAllRecipes = async (parent, {filter}, context) => {
             }
         });
     }
-
+    
     try {
         const recipes = await recipeModel.aggregate(aggregate);
-        const total = recipes.length;
         if(recipes.length == 0){
             throw error;
         }
+        
+        //check if "USER" login
+        if (context.role === 'USER') {
+            //get favorite by user who login
+            const favorite = await favoriteModel.find({user_id: context.user_id});
+            //check if the recipe is favorite by user who login or not
+            for (const [index, recipe] of recipes.entries()) {
+                recipes[index].is_favorite = false;
+                for (favoriteRecipe of favorite) {
+                    if (recipe._id.toString() === favoriteRecipe.recipe_id.toString()) {
+                        recipes[index].is_favorite = true;
+                    }
+                }
+            }
+        }
+
         return {
             listRecipe: recipes,
-            total
+            total : total[0].total
         };
     } catch (error) {
         throw new GraphQLError('Recipe not found', {
@@ -289,6 +307,20 @@ const getOneRecipe = async (parent, {_id}, context) => {
         if(recipe.length == 0){
             throw error;
         }
+
+        //check if "USER" login
+        if (context.role === 'USER') {
+            //get favorite by user who login
+            const favorite = await favoriteModel.find({user_id: context.user_id});
+            //check if the recipe is favorite by user who login or not
+            recipe[0].is_favorite = false;
+            for (favoriteRecipe of favorite) {
+                if (recipe[0]._id.toString() === favoriteRecipe.recipe_id.toString()) {
+                    recipe[0].is_favorite = true;
+                }
+            }
+        }
+
         return recipe[0];
     } catch (error) {
         throw new GraphQLError('Recipe not found', {
