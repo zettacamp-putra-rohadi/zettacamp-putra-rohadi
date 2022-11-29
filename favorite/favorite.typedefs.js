@@ -4,7 +4,7 @@ const typeDefs = gql`
     type Favorite {
         _id : ID
         user_id : ID
-        recipe_id : ID
+        recipe_id : Recipe
         favorite_status : favoriteStatus
     }
 

@@ -23,8 +23,8 @@ const { cartTypeDefs, cartResolver } = require("./cart/cart.index");
 const { favoriteTypeDefs, favoriteResolver } = require("./favorite/favorite.index");
 
 const ingredientListLoader = require("./recipe/recipe.loader");
-
 const {TransactionUserLoader, RecipeLoader} = require("./transaction/transaction.loader");
+const favoriteRecipeLoader = require("./favorite/favorite.loader");
 
 const typeDef = gql`
   type Query,
@@ -76,6 +76,7 @@ const server = new ApolloServer({
           ingredientListLoader,
           TransactionUserLoader,
           RecipeLoader,
+          favoriteRecipeLoader,
           req
       };
   },

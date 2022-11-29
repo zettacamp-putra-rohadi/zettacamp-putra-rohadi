@@ -5,20 +5,12 @@ const {GraphQLError} = require('graphql');
 const getAllFavorites = async (parent, {page, limit}, context) => {
     let aggregate = [];
 
-    if (context.role !== 'ADMIN') {
-        aggregate.push({ 
-            $match : { $and: [
-                {user_id: mongoose.Types.ObjectId(context.user_id)},
-                {favorite_status: {$eq: 'ACTIVE'}}
-            ] }
-        });
-    } else {
-        aggregate.push({ 
-            $match : { $and: [
-                {favorite_status: {$eq: 'ACTIVE'}}
-            ] }
-        });
-    }
+    aggregate.push({ 
+        $match : { $and: [
+            {user_id: mongoose.Types.ObjectId(context.user_id)},
+            {favorite_status: {$eq: 'ACTIVE'}}
+        ] }
+    });
     
     const total = await favoriteModel.aggregate(aggregate).count('total');
     
@@ -73,8 +65,9 @@ const getOneFavorite = async (parent, {_id}, context) => {
         if(!favorite){
             throw error;
         }
-        console.log(favorite[0]);
+
         return favorite[0];
+
     } catch (error) {
         throw new GraphQLError('Favorite not found', {
             extensions: {
@@ -110,6 +103,12 @@ const deleteFavorite = async (parent, {_id}, context) => {
     }
 }
 
+const getRecipeLoader = async (parent, args, context) => {
+    if(parent.recipe_id){
+        return await context.favoriteRecipeLoader.load(parent.recipe_id);
+    }
+}
+
 module.exports = {
     Query : {
         getAllFavorites,
@@ -118,5 +117,8 @@ module.exports = {
     Mutation : {
         createFavorite,
         deleteFavorite,
+    },
+    Favorite : {
+        recipe_id: getRecipeLoader
     }
 }
