@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
 const createRecipe = async (parent, {name, picture, price, discount, ingredients, discount_status}, context) => {
-    let priceAfterDiscount = null;
+    let priceAfterDiscount = 0;
     if(discount_status === 'ACTIVE') {
         if(discount < 0 || discount > 100){
             throw new GraphQLError('Discount must be between 0 and 100', {
@@ -50,11 +50,13 @@ const updateRecipe = async (parent, {_id, name, picture, price, discount, ingred
         });
     }
 
+    //field must be filled
     let queryUpdate = {
         price : price,
         discount_status : discount_status
     };
 
+    //field can be empty and check if filled
     name ? queryUpdate.name = name : null;
     picture ? queryUpdate.picture = picture : null;
     ingredients ? queryUpdate.ingredients = ingredients : null;
@@ -165,6 +167,31 @@ const updateOfferStatus = async (parent, {_id, offer_status}, context) => {
             }
         });
     }
+}
+
+const updateDiscountStatus = async (parent, {_id, discount_status}, context) => {
+    const recipe = await recipeModel.findById(_id);
+
+    if(!recipe || recipe.recipe_status === 'DELETED'){
+        throw new GraphQLError('Recipe not found', {
+            extensions: {
+                code: "recipe/recipe-not-found",
+            }
+        });
+    }
+
+    if(recipe.recipe_status === 'ACTIVE'){
+        throw new GraphQLError('Recipe are still used', {
+            extensions: {
+                code: "recipe/recipe-still-used",
+            }
+        });
+    }
+
+    const result = await recipeModel.findOneAndUpdate({_id: _id}, {
+        discount_status: discount_status
+    }, {new: true});
+    return result;
 }
 
 const getAllRecipes = async (parent, {filter}, context) => {
@@ -400,6 +427,7 @@ module.exports = {
         deleteRecipe,
         updateRecipeStatus,
         updateOfferStatus,
+        updateDiscountStatus,
     },
     ListIngredient :{
         ingredient_id: getIngredientLoader

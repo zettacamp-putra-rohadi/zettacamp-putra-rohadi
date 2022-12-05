@@ -53,6 +53,8 @@ module.exports = {
         updateRecipe: userAuth,
         deleteRecipe: userAuth,
         updateRecipeStatus: userAuth,
+        updateOfferStatus: userAuth,
+        updateDiscountStatus: userAuth,
         createTransaction: userAuth,
         deleteTransaction: userAuth,
         createCart: userAuth,
@@ -60,7 +62,6 @@ module.exports = {
         deleteCart: userAuth,
         createFavorite: userAuth,
         deleteFavorite: userAuth,
-        updateOfferStatus: userAuth,
         createRating: userAuth,
     }
 };

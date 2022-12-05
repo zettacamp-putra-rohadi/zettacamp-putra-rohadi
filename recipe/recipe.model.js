@@ -4,8 +4,14 @@ const recipeSchema = new mongoose.Schema({
     name: String,
     picture: String,
     price: Number,
-    discount: Number,
-    price_after_discount: Number,
+    discount: {
+        type: Number,
+        default: 0
+    },
+    price_after_discount: {
+        type: Number,
+        default: 0
+    },
     ingredients: [{
         ingredient_id : {type: mongoose.Schema.Types.ObjectId, ref: "ingredients",  required: true},
         stock_used: Number

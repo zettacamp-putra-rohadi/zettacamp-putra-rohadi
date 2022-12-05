@@ -34,6 +34,8 @@ module.exports = {
         updateRecipe: verifRole,
         deleteRecipe: verifRole,
         updateRecipeStatus: verifRole,
+        updateOfferStatus: verifRole,
+        updateDiscountStatus: verifRole,
         // createTransaction,
         deleteTransaction: verifRole,
         // createCart,

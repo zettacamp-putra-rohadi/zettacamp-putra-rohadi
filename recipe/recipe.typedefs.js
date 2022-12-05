@@ -88,6 +88,7 @@ const typeDefs = gql`
         deleteRecipe(_id: ID!): Recipe
         updateRecipeStatus(_id: ID!, recipe_status: recipeStatusInput!): Recipe
         updateOfferStatus(_id: ID!, offer_status: offerStatus!): Recipe
+        updateDiscountStatus(_id: ID!, discount_status: discountStatus!): Recipe
     }
 `;
 module.exports = typeDefs;
