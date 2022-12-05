@@ -9,6 +9,9 @@ const typeDefs = gql`
         hashed_password : String
         user_status : UserStatus
         role : RoleUser
+        first_answer : String
+        second_answer : String
+        balance : Float
         user_type : UserType
     }
 
@@ -34,6 +37,9 @@ const typeDefs = gql`
         email : String
         user_status : UserStatus
         role : RoleUser
+        user_question : String
+        user_answer : String
+        balance : Float
         user_type : [UserType]
     }
 
@@ -61,6 +67,14 @@ const typeDefs = gql`
         email : String!
         password : String!
         role : RoleUser!
+        user_question : String
+        user_answer : String
+    }
+
+    input ForgotPasswordUsersInput{
+        email : String!
+        password : String!
+        user_answer : String!
     }
     
     input UpdateUserInput{
@@ -83,6 +97,7 @@ const typeDefs = gql`
     type Mutation{
         createUser(user_input : UsersInput) : UsersResult
         loginUser(user_input : UserLoginInput) : LoginUserResult
+        forgotPassword(user_input : ForgotPasswordUsersInput) : UsersResult
         updateUser(_id : ID!, user_input : UpdateUserInput) : UsersResult
         deleteUser(_id : ID!) : UsersResult
     }

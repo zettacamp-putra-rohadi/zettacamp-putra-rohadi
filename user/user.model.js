@@ -22,6 +22,18 @@ const userSchema = new mongoose.Schema({
         enum: ['ADMIN', 'USER'],
         default: 'USER'
     }, 
+    user_question: {
+        type: String,
+        required: true,
+    },
+    user_answer: {
+        type: String,
+        required: true,
+    },
+    balance: {
+        type: Number,
+        default: 1000000
+    },
     user_type: [{
         name: String,
         view: Boolean

@@ -95,6 +95,8 @@ const createUser = async function (parent, {user_input}, context){
         hashed_password: hashed_password,
         user_status: user_input.status,
         role : user_input.role,
+        user_question : user_input.user_question,
+        user_answer : user_input.user_answer,
         user_type : permission
     });
     const result = await newUser.save();
@@ -128,6 +130,29 @@ const loginUser = async (parent, {user_input}, context) => {
         user: user[0],
         token: token
     }
+}
+
+const forgotPassword = async (parent, {user_input}, context) => {
+    const user = await UserModel.findOne({email: user_input.email});
+    if(!user){
+        throw new GraphQLError('Email not found', {
+            extensions: {
+                code: "user/email-not-found",
+            }
+        });
+    }
+    if(user.user_answer !== user_input.user_answer){
+        throw new GraphQLError('Incorrect answer', {
+            extensions: {
+                code: "user/incorrect-answer",
+            }
+        });
+    }
+    const hashed_password = await bcrypt.hash(user_input.password, 10);
+    const updatePassword = await UserModel.findOneAndUpdate({email: user_input.email}, {
+        hashed_password: hashed_password
+        }, {new: true});
+    return updatePassword;
 }
 
 const updateUser = async (parent, {_id, user_input}, context) => {
@@ -259,6 +284,7 @@ module.exports = {
     Mutation : {
         createUser,
         loginUser,
+        forgotPassword,
         updateUser,
         deleteUser,
     }
