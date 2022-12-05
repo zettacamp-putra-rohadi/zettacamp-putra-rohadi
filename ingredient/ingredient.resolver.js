@@ -4,21 +4,13 @@ const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
 const createIngredient = async (parent, {name, stock, unit}, context) => {
-    const ingredient = await ingredientModel.findOne({name: name});
+    const ingredient = await ingredientModel.findOne({name: new RegExp(name, 'i')});
     if(ingredient && ingredient.ingredient_status === 'ACTIVE'){
         throw new GraphQLError('Name of ingredient already used', {
             extensions: {
                 code: "ingredient/name-already-used",
             }
         });
-    }
-    if(ingredient && ingredient.ingredient_status === 'DELETED'){
-        const updateStatus = await ingredientModel.findOneAndUpdate({name: name}, {
-            stock : stock,
-            unit : unit,
-            ingredient_status: 'ACTIVE'
-        }, {new: true});
-        return updateStatus;
     }
     const newIngredient = new ingredientModel({
         name: name,
