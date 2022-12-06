@@ -2,6 +2,7 @@ const transactionModel = require('./transaction.model');
 const recipeModel = require('../recipe/recipe.model');
 const ingredientModel = require('../ingredient/ingredient.model');
 const cartModel = require('../cart/cart.model');
+const userModel = require('../user/user.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 const moment = require('moment');
@@ -9,16 +10,20 @@ const moment = require('moment');
 const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     const userId = context.user_id;
     try {
-        const validateData = await validateStockIngredient(menu_input);
+        //validate user balance
+        const isBalance = await validateUserBalance(userId, totalPrice);
+
+        //validate stock ingredient
+        const validateStock = await validateStockIngredient(menu_input);
         let isStock = true;
-        for (data of validateData) {
+        for (data of validateStock) {
             if (!data.isStock) {
                 isStock = false;
                 break;
             }
         }
 
-        if (isStock) {
+        if (isStock && isBalance) {
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu: menu_input,
@@ -43,7 +48,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 transaction_status: 'ACTIVE',
             });
             const result = await newTransaction.save();
-            result.DeclineRecipe = validateData;
+            result.DeclineRecipe = validateStock;
             return result;
         }
     } catch (error) {
@@ -51,6 +56,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
     }
 }
 
+//validate stock ingredient
 async function validateStockIngredient(recipe_input) {
     let ingredientsUsed = [];
     let isStock = true;
@@ -92,6 +98,7 @@ async function validateStockIngredient(recipe_input) {
     return listRecipe;
 }
 
+//reduce ingredient stock
 function reduceingredientStock(ingredientsUsed) {
     for (let i = 0; i < ingredientsUsed.length; i++) {
         ingredientModel.findByIdAndUpdate(ingredientsUsed[i].ingredient_id, {
@@ -104,6 +111,31 @@ function reduceingredientStock(ingredientsUsed) {
             }
         });
     }
+    return true;
+}
+
+//validate user balance
+async function validateUserBalance(userId, totalPrice) {
+    const user = await userModel.findById(userId);
+    if (user.balance < totalPrice){
+        return false;
+    } else {
+        reduceUserBalance(userId, totalPrice);
+        return true;
+    }
+}
+
+//reduce user balance
+function reduceUserBalance(userId, totalPrice) {
+    userModel.findByIdAndUpdate(userId, {
+        $inc: {
+            balance: -totalPrice
+        }
+    }, (err, result) => {
+        if (err) {
+            throw new Error(err);
+        }
+    });
     return true;
 }
 
