@@ -16,7 +16,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
         //validate stock ingredient
         const validateStock = await validateStockIngredient(menu_input);
         let isStock = true;
-        for (data of validateStock) {
+        for (data of validateStock[0]) {
             if (!data.isStock) {
                 isStock = false;
                 break;
@@ -25,6 +25,8 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
 
         if (isStock && isBalance) {
             reduceUserBalance(userId, totalPrice);
+            reduceingredientStock(validateStock[1]);
+            
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu: menu_input,
@@ -49,7 +51,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 transaction_status: 'ACTIVE',
             });
             const result = await newTransaction.save();
-            result.DeclineRecipe = validateStock;
+            result.DeclineRecipe = validateStock[0];
             return result;
         }
     } catch (error) {
@@ -83,20 +85,10 @@ async function validateStockIngredient(recipe_input) {
         data.recipe_name = recipe.name;
         listRecipe.push(data);
     }
-    let check = true;
-    for (data of listRecipe) {
-        if (!data.isStock) {
-            check = false;
-            break;
-        }
-    }
-    if (check) {
-        const result = reduceingredientStock(ingredientsUsed);
-        isStock = result;
-        ingredientsUsed = [];
-    }
+    const result = [listRecipe, ingredientsUsed]
+    console.log(result);
     
-    return listRecipe;
+    return result;
 }
 
 //reduce ingredient stock
