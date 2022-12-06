@@ -37,8 +37,8 @@ const typeDefs = gql`
         email : String
         user_status : UserStatus
         role : RoleUser
-        user_question : String
-        user_answer : String
+        first_answer : String
+        second_answer : String
         balance : Float
         user_type : [UserType]
     }
@@ -67,14 +67,15 @@ const typeDefs = gql`
         email : String!
         password : String!
         role : RoleUser!
-        user_question : String
-        user_answer : String
+        first_answer : String
+        second_answer : String
     }
 
     input ForgotPasswordUsersInput{
         email : String!
         password : String!
-        user_answer : String!
+        first_answer : String!
+        second_answer : String!
     }
     
     input UpdateUserInput{
@@ -91,7 +92,7 @@ const typeDefs = gql`
 
     type Query{
         getAllUsers(user_input : UsersFilter) : UsersResultGetAll
-        getOneUser(_id : ID, email: String) : UsersResult
+        getOneUser : UsersResult
     }
 
     type Mutation{

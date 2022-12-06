@@ -22,11 +22,11 @@ const userSchema = new mongoose.Schema({
         enum: ['ADMIN', 'USER'],
         default: 'USER'
     }, 
-    user_question: {
+    first_answer: {
         type: String,
         required: true,
     },
-    user_answer: {
+    second_answer: {
         type: String,
         required: true,
     },
@@ -38,6 +38,6 @@ const userSchema = new mongoose.Schema({
         name: String,
         view: Boolean
     }]
-}, {versionKey:false},{timestamps: true});
+}, {versionKey:false, timestamps: true},);
 
 module.exports = mongoose.model("users", userSchema);

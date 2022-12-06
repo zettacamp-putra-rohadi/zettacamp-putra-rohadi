@@ -95,8 +95,8 @@ const createUser = async function (parent, {user_input}, context){
         hashed_password: hashed_password,
         user_status: user_input.status,
         role : user_input.role,
-        user_question : user_input.user_question,
-        user_answer : user_input.user_answer,
+        first_answer : user_input.first_answer,
+        second_answer : user_input.second_answer,
         user_type : permission
     });
     const result = await newUser.save();
@@ -141,13 +141,23 @@ const forgotPassword = async (parent, {user_input}, context) => {
             }
         });
     }
-    if(user.user_answer !== user_input.user_answer){
+    
+    if(user.first_answer !== user_input.first_answer){
         throw new GraphQLError('Incorrect answer', {
             extensions: {
                 code: "user/incorrect-answer",
             }
         });
     }
+
+    if(user.second_answer !== user_input.second_answer){
+        throw new GraphQLError('Incorrect answer', {
+            extensions: {
+                code: "user/incorrect-answer",
+            }
+        });
+    }
+
     const hashed_password = await bcrypt.hash(user_input.password, 10);
     const updatePassword = await UserModel.findOneAndUpdate({email: user_input.email}, {
         hashed_password: hashed_password
@@ -252,21 +262,13 @@ const getAllUsers = async (parent, {user_input}, context) => {
     }
 }
 
-const getOneUser = async (parent, {_id, email}, context) => {
-    let aggregate = [];
-    let query = {$and: []};
-
-    query.$and.push({user_status: {$ne: 'DELETED'}});
-
-    _id ? query.$and.push({_id: mongoose.Types.ObjectId(_id)}) : null;
-    email ? query.$and.push({email: email}) : null;
-    aggregate.push({$match: query});
+const getOneUser = async (parent, args, context) => {
     try {
-        const user = await UserModel.aggregate(aggregate);
+        const user = await UserModel.findById(context.user_id);
         if(user.length == 0){
             throw error;
         }
-        return user[0];
+        return user;
     } catch (error) {
         throw new GraphQLError('User not found', {
             extensions: {
