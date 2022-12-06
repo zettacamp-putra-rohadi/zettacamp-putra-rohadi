@@ -24,6 +24,7 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
         }
 
         if (isStock && isBalance) {
+            reduceUserBalance(userId, totalPrice);
             const newTransaction = new transactionModel({
                 user_id : userId,
                 menu: menu_input,
@@ -120,7 +121,6 @@ async function validateUserBalance(userId, totalPrice) {
     if (user.balance < totalPrice){
         return false;
     } else {
-        reduceUserBalance(userId, totalPrice);
         return true;
     }
 }
