@@ -30,6 +30,7 @@ const typeDefs = gql`
         is_favorite: Boolean
         favorite_id: ID
         availableStock : Int
+        avg_rating: Float
     }
 
     type RecipesResult{

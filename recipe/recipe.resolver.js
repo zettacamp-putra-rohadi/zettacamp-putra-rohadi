@@ -2,6 +2,7 @@ const recipeModel = require('./recipe.model');
 const ingredientModel = require('../ingredient/ingredient.model');
 const transactionModel = require('../transaction/transaction.model');
 const favoriteModel = require('../favorite/favorite.model');
+const ratingModel = require('../rating/rating.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
@@ -256,8 +257,11 @@ const getAllRecipes = async (parent, {filter}, context) => {
             }
         }
 
+        //call function calculate rating average
+        const listRecipe = calculateAvgRating(recipes);
+
         return {
-            listRecipe: recipes,
+            listRecipe: listRecipe,
             total : total[0].total
         };
     } catch (error) {
@@ -305,8 +309,12 @@ const getAllRecipesPublic = async (parent, {filter}, context) => {
         if(recipes.length == 0){
             throw error
         }
+
+        //call function calculate rating average
+        const listRecipe = calculateAvgRating(recipes);
+
         return {
-            listRecipe: recipes,
+            listRecipe: listRecipe,
             total : total[0].total
         };
     } catch (error) {
@@ -352,7 +360,10 @@ const getOneRecipe = async (parent, {_id}, context) => {
             }
         }
 
-        return recipe[0];
+        //call function calculate rating average
+        const listRecipe = await calculateAvgRating(recipe);
+
+        return listRecipe[0];
     } catch (error) {
         throw new GraphQLError('Recipe not found', {
             extensions: {
@@ -397,7 +408,11 @@ const getTop3Recipes = async (parent, args, context) => {
         let recipeData = await recipeModel.findById(data.recipe_id);
         top3Recipes.push(recipeData);
     }
-    return top3Recipes;
+
+    //call function calculate rating average
+    const listTop3Recipes = calculateAvgRating(top3Recipes);
+
+    return listTop3Recipes;
 }
 
 const getIngredientLoader = async function (parent, args, context) {
@@ -413,6 +428,18 @@ const getAvailableStock = async function (parent, args, context) {
     }
     return Math.min(...availableStock);;
 };
+
+async function calculateAvgRating(recipes){
+    const listRecipe = recipes
+    for (const [index, recipe] of listRecipe.entries()){
+        const avgRating = await ratingModel.aggregate([
+            {$match: {recipe_id: mongoose.Types.ObjectId(recipe._id)}},
+            {$group: {_id: null, avgRating: {$avg: "$rating_value"}}}
+        ])
+        listRecipe[index].avg_rating = Math.round(avgRating[0].avgRating);
+    }
+    return listRecipe;
+}
 
 module.exports = {
     Query : {
