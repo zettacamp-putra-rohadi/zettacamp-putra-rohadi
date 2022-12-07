@@ -86,7 +86,6 @@ async function validateStockIngredient(recipe_input) {
         listRecipe.push(data);
     }
     const result = [listRecipe, ingredientsUsed]
-    console.log(result);
     
     return result;
 }

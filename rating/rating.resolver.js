@@ -42,7 +42,6 @@ const getAllRatings = async (parent, {page, limit, recipe_id}, context) => {
 
     try{
         const listRating = await ratingModel.aggregate(aggregate);
-        console.log(listRating);
         if(listRating.length == 0){
             throw error;
         }
