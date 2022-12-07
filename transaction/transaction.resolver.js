@@ -281,7 +281,6 @@ const getOneTransaction = async (parent, {id}, context) => {
     }
 }
 
-
 const getTransactionUsersLoader = async (parent, ags, context) => {
     if (parent.user_id) {
         return await context.TransactionUserLoader.load(parent.user_id);

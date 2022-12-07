@@ -11,6 +11,7 @@ const getAllFavorites = async (parent, {page, limit}, context) => {
             {favorite_status: {$eq: 'ACTIVE'}}
         ] }
     });
+    aggregate.push({$sort: {created_at: -1}});
     
     const total = await favoriteModel.aggregate(aggregate).count('total');
     

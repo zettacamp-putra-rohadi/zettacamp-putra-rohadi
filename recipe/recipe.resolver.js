@@ -211,6 +211,7 @@ const getAllRecipes = async (parent, {filter}, context) => {
     filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
 
     aggregate.push({$match: query});
+    aggregate.push({$sort: {created_at: -1}});
 
     const total = await recipeModel.aggregate(aggregate).count('total');
     
@@ -281,6 +282,7 @@ const getAllRecipesPublic = async (parent, {filter}, context) => {
     filter.recipe_name ? query.$and.push({name: new RegExp(filter.recipe_name, 'i')}) : null;
 
     aggregate.push({$match: query});
+    aggregate.push({$sort: {created_at: -1}});
 
     const total = await recipeModel.aggregate(aggregate).count('total');
     

@@ -31,6 +31,6 @@ const recipeSchema = new mongoose.Schema({
         enum: ["ACTIVE", "INACTIVE"],
         default: "INACTIVE"
     }
-});
+},{versionKey:false, timestamps: true});
 
 module.exports = mongoose.model("recipes", recipeSchema);

@@ -103,6 +103,7 @@ const getAllIngredients = async (parent, {filter}, context) => {
     }
 
     aggregate.push({$match: query});
+    aggregate.push({$sort: {created_at: -1}});
 
     const total = await ingredientModel.aggregate(aggregate).count('total');
 

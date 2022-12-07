@@ -16,6 +16,6 @@ const favoriteSchema = new mongoose.Schema({
         enum : ['ACTIVE', 'DELETED'],
         default: 'ACTIVE'
     }
-});
+},{versionKey:false, timestamps: true});
 
 module.exports = mongoose.model("favorites", favoriteSchema);

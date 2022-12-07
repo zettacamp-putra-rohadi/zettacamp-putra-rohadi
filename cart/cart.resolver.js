@@ -84,6 +84,7 @@ const getAllCarts = async (parent, {page, limit}, context) => {
         query.$and.push({user_id: mongoose.Types.ObjectId(context.user_id)});
     }
     aggregate.push({$match: query});
+    aggregate.push({$sort: {created_at: -1}});
 
     const getCarts = await cartModel.aggregate(aggregate);
     const total = getCarts.length;
