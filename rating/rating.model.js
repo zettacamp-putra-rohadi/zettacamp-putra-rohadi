@@ -28,6 +28,6 @@ const ratingSchema = new mongoose.Schema({
         type: String,
         default: moment(new Date()).locale('id').format('LL')
     }
-})
+},{versionKey:false, timestamps: true})
 
 module.exports = mongoose.model("ratings", ratingSchema);

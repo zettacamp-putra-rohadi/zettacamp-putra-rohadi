@@ -10,6 +10,7 @@ scalar Date
         order_status: OrderStatus
         order_date: String
         transaction_status: TransactionStatus
+        rating_status: Boolean
     }
 
     type Menu{

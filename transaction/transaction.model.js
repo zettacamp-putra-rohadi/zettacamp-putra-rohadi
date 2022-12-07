@@ -24,7 +24,11 @@ const transactionSchema = new mongoose.Schema({
         type: String,
         enum: ["ACTIVE", "DELETED"],
         default: "ACTIVE"
+    },
+    rating_status: {
+        type: Boolean,
+        default: false
     }
-});
+},{versionKey:false, timestamps: true});
 
 module.exports = mongoose.model("transactions", transactionSchema);

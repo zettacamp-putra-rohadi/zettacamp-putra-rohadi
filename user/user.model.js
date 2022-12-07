@@ -38,6 +38,6 @@ const userSchema = new mongoose.Schema({
         name: String,
         view: Boolean
     }]
-}, {versionKey:false, timestamps: true},);
+}, {versionKey:false, timestamps: true});
 
 module.exports = mongoose.model("users", userSchema);

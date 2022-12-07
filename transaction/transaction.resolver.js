@@ -160,7 +160,11 @@ const getAllTransactions = async (parent, {filter}, context) => {
     if (context.role === 'ADMIN') {
         aggregate.push({$match:{transaction_status: 'ACTIVE'}});
     } else {
-        aggregate.push({$match:{$and : [{user_id: mongoose.Types.ObjectId(context.user_id)}, {transaction_status: 'ACTIVE'}]}});
+        aggregate.push( {$match: {$and : [
+            {user_id: mongoose.Types.ObjectId(context.user_id)}, 
+            {transaction_status: 'ACTIVE'}, 
+            {order_status: 'SUCCESS'}
+        ] } } );
     }
 
     if (filter.last_name_user){
@@ -204,6 +208,7 @@ const getAllTransactions = async (parent, {filter}, context) => {
     }
 
     const total = await transactionModel.aggregate(aggregate).count('total');
+    aggregate.push({$sort: {createdAt: -1}});
 
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
