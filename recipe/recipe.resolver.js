@@ -435,10 +435,15 @@ async function calculateAvgRating(recipes){
     const listRecipe = recipes
     for (const [index, recipe] of listRecipe.entries()){
         const avgRating = await ratingModel.aggregate([
-            {$match: {recipe_id: mongoose.Types.ObjectId(recipe._id)}},
-            {$group: {_id: null, avgRating: {$avg: "$rating_value"}}}
-        ])
-        listRecipe[index].avg_rating = Math.round(avgRating[0].avgRating);
+                {$match: {recipe_id: mongoose.Types.ObjectId(recipe._id)}},
+                {$group: {_id: null, avgRating: {$avg: "$rating_value"}}}
+            ])
+            
+        if (avgRating.length == 0){
+            listRecipe[index].avg_rating = 0;
+        } else {
+            listRecipe[index].avg_rating = Math.round(avgRating[0].avgRating);
+        }
     }
     return listRecipe;
 }
