@@ -442,7 +442,8 @@ async function calculateAvgRating(recipes){
         if (avgRating.length == 0){
             listRecipe[index].avg_rating = 0;
         } else {
-            listRecipe[index].avg_rating = Math.round(avgRating[0].avgRating);
+            // listRecipe[index].avg_rating = Math.round(avgRating[0].avgRating);
+            listRecipe[index].avg_rating = avgRating[0].avgRating;
         }
     }
     return listRecipe;
