@@ -6,13 +6,13 @@ const moment = require('moment');
 
 const getAllRatings = async (parent, {page, limit, recipe_id}, context) => {
     let aggregate = [];
-
+    
     if (recipe_id) {
-        aggregate.push({ $match : {recipe_id: mongoose.Types.ObjectId(recipe_id)} }
-        );
-    } else {
-        aggregate.push({ $match : {user_id: mongoose.Types.ObjectId(context.user_id)} }
-        );
+        aggregate.push({ $match : {recipe_id: mongoose.Types.ObjectId(recipe_id)} } );
+    } else if (context.role == 'USER'){
+        aggregate.push({ $match : {user_id: mongoose.Types.ObjectId(context.user_id)} } );
+    } else if (context.role == 'PUBLIC'){
+        aggregate.push({ $match : {user_id: mongoose.Types.ObjectId(context.user_id)} } );
     }
 
     aggregate.push({ $sort : {createdAt: -1} });

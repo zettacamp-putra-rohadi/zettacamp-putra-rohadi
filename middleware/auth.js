@@ -26,6 +26,20 @@ const userAuth = async function (resolver, parent, ags, context){
     }
 }
 
+const publicAuth = async function (resolver, parent, ags, context){
+    const token = context.req.get('Authorization');
+    if(!token){
+        context.user_id = null;
+        context.role = 'PUBLIC';
+    } else {
+        const user = await jwt.verify(token, 'secretbanget');
+        context.user_id = user.id;
+        context.role = user.role;
+        context.token = token;
+    }
+    return resolver();
+}
+
 
 module.exports = {
     Query: {
@@ -41,7 +55,7 @@ module.exports = {
         getOneCart: userAuth,
         getAllFavorites : userAuth,
         getOneFavorite : userAuth,
-        getAllRatings : userAuth,
+        getAllRatings : publicAuth,
     },
     Mutation: {
         updateUser: userAuth,
