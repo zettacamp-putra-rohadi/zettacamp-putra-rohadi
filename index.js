@@ -26,7 +26,7 @@ const { ratingTypeDefs, ratingResolver } = require("./rating/rating.index.js");
 const ingredientListLoader = require("./recipe/recipe.loader");
 const {TransactionUserLoader, RecipeLoader} = require("./transaction/transaction.loader");
 const favoriteRecipeLoader = require("./favorite/favorite.loader");
-const ratingRecipeLoader = require("./rating/rating.loader");
+const { ratingRecipeLoader, ratingUserLoader } = require("./rating/rating.loader");
 
 const typeDef = gql`
   type Query,
@@ -82,6 +82,7 @@ const server = new ApolloServer({
           RecipeLoader,
           favoriteRecipeLoader,
           ratingRecipeLoader,
+          ratingUserLoader,
           req
       };
   },

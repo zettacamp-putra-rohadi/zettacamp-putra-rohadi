@@ -3,7 +3,7 @@ const {gql} = require('apollo-server-express');
 const typeDefs = gql`
     type Rating {
         _id: ID
-        user_id : ID
+        user_id : Users
         recipe_id : Recipe
         transaction_id : ID
         rating_value : Int

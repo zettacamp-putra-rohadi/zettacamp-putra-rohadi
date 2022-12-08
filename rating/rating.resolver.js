@@ -84,6 +84,13 @@ const getRecipeLoader = async (parent, args, context) => {
     }
 }
 
+const getUserLoader = async (parent, args, context) => {
+    if(parent.user_id){
+        const user = await context.ratingUserLoader.load(parent.user_id);
+        return user;
+    }
+}
+
 module.exports = {
     Query: {
         getAllRatings,
@@ -93,5 +100,6 @@ module.exports = {
     },
     Rating: {
         recipe_id: getRecipeLoader,
+        user_id: getUserLoader,
     }
 };
