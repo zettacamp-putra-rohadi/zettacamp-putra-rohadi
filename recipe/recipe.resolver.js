@@ -198,6 +198,7 @@ const updateDiscountStatus = async (parent, {_id, discount_status}, context) => 
 const getAllRecipes = async (parent, {filter}, context) => {
     let aggregate = [];
     let query = {$and: []};
+    let totalData;
     
     if (context.role === 'USER') {
         query.$and.push({recipe_status: 'ACTIVE'});
@@ -213,7 +214,11 @@ const getAllRecipes = async (parent, {filter}, context) => {
     aggregate.push({$match: query});
     aggregate.push({$sort: {created_at: -1}});
 
-    const total = await recipeModel.aggregate(aggregate).count('total');
+    //check if not favorite page
+    if (filter.is_favorite_page === false) {    
+        const calTotal = await recipeModel.aggregate(aggregate).count('total');
+        totalData = calTotal[0].total
+    }
     
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
@@ -236,7 +241,7 @@ const getAllRecipes = async (parent, {filter}, context) => {
     }
     
     try {
-        const recipes = await recipeModel.aggregate(aggregate);
+        let recipes = await recipeModel.aggregate(aggregate);
         if(recipes.length == 0){
             throw error;
         }
@@ -258,12 +263,18 @@ const getAllRecipes = async (parent, {filter}, context) => {
             }
         }
 
+        //check if favorite page
+        if (filter.is_favorite_page === true){
+            recipes = recipes.filter(recipe => recipe.is_favorite === true);
+            totalData = recipes.length;
+        }
+
         //call function calculate rating average
         const listRecipe = calculateAvgRating(recipes);
 
         return {
             listRecipe: listRecipe,
-            total : total[0].total
+            total : totalData
         };
     } catch (error) {
         throw new GraphQLError('Recipe not found', {
