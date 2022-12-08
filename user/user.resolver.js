@@ -96,7 +96,6 @@ const createUser = async function (parent, {user_input}, context){
         user_status: user_input.status,
         role : user_input.role,
         first_answer : user_input.first_answer,
-        second_answer : user_input.second_answer,
         user_type : permission
     });
     const result = await newUser.save();
@@ -143,14 +142,6 @@ const forgotPassword = async (parent, {user_input}, context) => {
     }
     
     if(user.first_answer !== user_input.first_answer){
-        throw new GraphQLError('Incorrect answer', {
-            extensions: {
-                code: "user/incorrect-answer",
-            }
-        });
-    }
-
-    if(user.second_answer !== user_input.second_answer){
         throw new GraphQLError('Incorrect answer', {
             extensions: {
                 code: "user/incorrect-answer",

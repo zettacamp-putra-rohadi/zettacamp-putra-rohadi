@@ -10,7 +10,6 @@ const typeDefs = gql`
         user_status : UserStatus
         role : RoleUser
         first_answer : String
-        second_answer : String
         balance : Float
         user_type : UserType
     }
@@ -38,7 +37,6 @@ const typeDefs = gql`
         user_status : UserStatus
         role : RoleUser
         first_answer : String
-        second_answer : String
         balance : Float
         user_type : [UserType]
     }
@@ -68,14 +66,12 @@ const typeDefs = gql`
         password : String!
         role : RoleUser!
         first_answer : String
-        second_answer : String
     }
 
     input ForgotPasswordUsersInput{
         email : String!
         password : String!
         first_answer : String!
-        second_answer : String!
     }
     
     input UpdateUserInput{
