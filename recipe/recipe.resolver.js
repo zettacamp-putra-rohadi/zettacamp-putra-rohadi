@@ -428,6 +428,20 @@ const getTop3Recipes = async (parent, args, context) => {
     return listTop3Recipes;
 }
 
+const getSpecialOffersRecipes = async (parent, args, context) => {
+    const recipes = await recipeModel.aggregate([
+        {
+            $match: { $and: [
+                {recipe_status: 'ACTIVE'},
+                {offer_status: 'ACTIVE'}
+                ]
+            }
+        },
+
+    ]);
+    return recipes;
+}
+
 const getIngredientLoader = async function (parent, args, context) {
     if (parent.ingredient_id) {
         return await context.ingredientListLoader.load(parent.ingredient_id);}
@@ -465,7 +479,8 @@ module.exports = {
         getAllRecipes,
         getOneRecipe,
         getAllRecipesPublic,
-        getTop3Recipes
+        getTop3Recipes,
+        getSpecialOffersRecipes
     },
     Mutation : {
         createRecipe,

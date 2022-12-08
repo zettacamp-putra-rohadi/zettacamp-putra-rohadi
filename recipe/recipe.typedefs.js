@@ -82,6 +82,7 @@ const typeDefs = gql`
         getAllRecipesPublic(filter: filterRecipe): RecipesResult
         getOneRecipe(_id: ID!): GetRecipe
         getTop3Recipes: [GetRecipe]
+        getSpecialOffersRecipes: [GetRecipe]
     }
 
     type Mutation {
