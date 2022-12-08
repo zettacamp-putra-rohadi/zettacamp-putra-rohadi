@@ -1,5 +1,6 @@
 const cartModel = require('./cart.model');
 const recipeModel = require('../recipe/recipe.model');
+const ingredientModel = require('../ingredient/ingredient.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
@@ -154,7 +155,15 @@ const getOneCart = async (parent, {id}, context) => {
 
 const getRecipeLoader = async (parent, ags, context) => {
     if (parent.recipe_id){
-        return await context.RecipeLoader.load(parent.recipe_id);
+        const recipe = await context.RecipeLoader.load(parent.recipe_id); 
+        let availableStock = [];
+        for (data of recipe.ingredients){
+            const stockUsed = data.stock_used;
+            const ingredient = await ingredientModel.findById(data.ingredient_id);
+            availableStock.push(Math.floor(ingredient.stock / stockUsed));
+        }
+        recipe.availableStock = Math.min(...availableStock);
+        return recipe;
     }
 }
 

@@ -15,6 +15,7 @@ const typeDefs = gql`
         is_favorite: Boolean
         favorite_id: ID
         offer_status: offerStatus
+        availableStock : Int
     }
 
     type GetRecipe {
