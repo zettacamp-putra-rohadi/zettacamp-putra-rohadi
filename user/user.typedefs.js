@@ -9,7 +9,7 @@ const typeDefs = gql`
         hashed_password : String
         user_status : UserStatus
         role : RoleUser
-        first_answer : String
+        security_answer : String
         balance : Float
         user_type : UserType
     }
@@ -36,7 +36,7 @@ const typeDefs = gql`
         email : String
         user_status : UserStatus
         role : RoleUser
-        first_answer : String
+        security_answer : String
         balance : Float
         user_type : [UserType]
     }
@@ -65,13 +65,13 @@ const typeDefs = gql`
         email : String!
         password : String!
         role : RoleUser!
-        first_answer : String
+        security_answer : String
     }
 
     input ForgotPasswordUsersInput{
         email : String!
         password : String!
-        first_answer : String!
+        security_answer : String!
     }
     
     input UpdateUserInput{

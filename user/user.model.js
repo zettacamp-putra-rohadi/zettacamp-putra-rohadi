@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
         enum: ['ADMIN', 'USER'],
         default: 'USER'
     }, 
-    first_answer: {
+    security_answer: {
         type: String,
         required: true,
     },
