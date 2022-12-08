@@ -215,7 +215,7 @@ const getAllRecipes = async (parent, {filter}, context) => {
     aggregate.push({$sort: {created_at: -1}});
 
     //check if not favorite page
-    if (filter.is_favorite_page === false) {    
+    if (filter.is_favorite_page !== true) {    
         const calTotal = await recipeModel.aggregate(aggregate).count('total');
         totalData = calTotal[0].total
     }

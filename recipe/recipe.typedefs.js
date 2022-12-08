@@ -46,7 +46,7 @@ const typeDefs = gql`
     input filterRecipe {
         recipe_name: String
         recipe_status: recipeStatusInput
-        is_favorite_page: Boolean!
+        is_favorite_page: Boolean
         page: Int!
         limit: Int!
     }
