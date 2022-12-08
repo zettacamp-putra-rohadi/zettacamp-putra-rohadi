@@ -11,6 +11,9 @@ scalar Date
         order_date: String
         transaction_status: TransactionStatus
         rating_status: Boolean
+        decline_recipe: [DeclineRecipe]
+        is_stock: Boolean
+        is_balance: Boolean
     }
 
     type Menu{
@@ -57,7 +60,9 @@ scalar Date
         order_status: OrderStatus
         order_date: String
         transaction_status: TransactionStatus
-        DeclineRecipe: [DeclineRecipe]
+        decline_recipe: [DeclineRecipe]
+        is_stock: Boolean
+        is_balance: Boolean
     }
 
     type DeclineRecipe{

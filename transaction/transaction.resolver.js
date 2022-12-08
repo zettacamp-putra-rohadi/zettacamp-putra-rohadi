@@ -49,9 +49,11 @@ const createTransaction = async (parent, {menu_input, totalPrice}, context) => {
                 order_status: 'FAILED',
                 order_date: moment(new Date()).locale('id').format('LL'),
                 transaction_status: 'ACTIVE',
+                is_stock: isStock,
+                is_balance: isBalance,
+                decline_recipe: validateStock[0]
             });
             const result = await newTransaction.save();
-            result.DeclineRecipe = validateStock[0];
             return result;
         }
     } catch (error) {

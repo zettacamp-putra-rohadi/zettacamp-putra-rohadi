@@ -28,6 +28,21 @@ const transactionSchema = new mongoose.Schema({
     rating_status: {
         type: Boolean,
         default: false
+    },
+    decline_recipe: [
+        {
+            isStock: Boolean,
+            recipe_id: {type: mongoose.Schema.Types.ObjectId, ref: "recipes"},
+            recipe_name: String,
+        }
+    ],
+    is_stock: {
+        type: Boolean,
+        default: true
+    },
+    is_balance: {
+        type: Boolean,
+        default: true
     }
 },{versionKey:false, timestamps: true});
 
