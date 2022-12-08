@@ -4,6 +4,7 @@ const recipeSchema = new mongoose.Schema({
     name: String,
     picture: String,
     price: Number,
+    description: String,
     discount: {
         type: Number,
         default: 0

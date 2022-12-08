@@ -6,6 +6,7 @@ const typeDefs = gql`
         name: String
         picture: String
         price: Float
+        description: String
         discount: Float
         price_after_discount: Float
         ingredients: [ListIngredient]
@@ -21,6 +22,7 @@ const typeDefs = gql`
         name: String
         picture: String
         price: Float
+        description: String
         discount: Float
         price_after_discount: Float
         ingredients: [ListIngredient]
@@ -86,8 +88,8 @@ const typeDefs = gql`
     }
 
     type Mutation {
-        createRecipe(name: String!, picture: String!, price: Float!, discount: Float ingredients: [IngredientInput]!, discount_status: discountStatus!): Recipe
-        updateRecipe(_id: ID!, name: String, picture: String, price: Float!, discount: Float, ingredients: [IngredientInput]!, discount_status: discountStatus!): Recipe
+        createRecipe(name: String!, picture: String!, price: Float!, description: String!, discount: Float ingredients: [IngredientInput]!, discount_status: discountStatus!): Recipe
+        updateRecipe(_id: ID!, name: String, picture: String, price: Float!, description: String, discount: Float, ingredients: [IngredientInput]!, discount_status: discountStatus!): Recipe
         deleteRecipe(_id: ID!): Recipe
         updateRecipeStatus(_id: ID!, recipe_status: recipeStatusInput!): Recipe
         updateOfferStatus(_id: ID!, offer_status: offerStatus!): Recipe

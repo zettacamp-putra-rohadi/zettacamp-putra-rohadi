@@ -6,7 +6,7 @@ const ratingModel = require('../rating/rating.model');
 const mongoose = require('mongoose');
 const {GraphQLError} = require('graphql');
 
-const createRecipe = async (parent, {name, picture, price, discount, ingredients, discount_status}, context) => {
+const createRecipe = async (parent, {name, picture, price, description, discount, ingredients, discount_status}, context) => {
     let priceAfterDiscount = 0;
     if(discount_status === 'ACTIVE') {
         if(discount < 1 || discount > 100){
@@ -26,6 +26,7 @@ const createRecipe = async (parent, {name, picture, price, discount, ingredients
         name,
         picture,
         price,
+        description,
         discount,
         price_after_discount : priceAfterDiscount,
         ingredients,
@@ -36,7 +37,7 @@ const createRecipe = async (parent, {name, picture, price, discount, ingredients
     return result;
 }
 
-const updateRecipe = async (parent, {_id, name, picture, price, discount, ingredients, discount_status}, context) => {
+const updateRecipe = async (parent, {_id, name, picture, price, discount, description, ingredients, discount_status}, context) => {
     const recipe = await recipeModel.findOne({_id: _id});
     if(!recipe || recipe.recipe_status === 'DELETED'){
         throw new GraphQLError('Recipe not found', {
@@ -62,6 +63,7 @@ const updateRecipe = async (parent, {_id, name, picture, price, discount, ingred
 
     //field can be empty and check if filled
     name ? queryUpdate.name = name : null;
+    description ? queryUpdate.description = description : null;
     picture ? queryUpdate.picture = picture : null;
     ingredients ? queryUpdate.ingredients = ingredients : null;
 
