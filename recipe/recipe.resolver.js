@@ -9,7 +9,7 @@ const {GraphQLError} = require('graphql');
 const createRecipe = async (parent, {name, picture, price, discount, ingredients, discount_status}, context) => {
     let priceAfterDiscount = 0;
     if(discount_status === 'ACTIVE') {
-        if(discount < 0 || discount > 100){
+        if(discount < 1 || discount > 100){
             throw new GraphQLError('Discount must be between 0 and 100', {
                 extensions: {
                     code: "recipe/discount-must-be-between-0-and-100",
@@ -18,6 +18,9 @@ const createRecipe = async (parent, {name, picture, price, discount, ingredients
         } else {
             priceAfterDiscount = price - (price * discount / 100);
         }
+    } else {
+        discount = 0;
+        priceAfterDiscount = 0;
     }
     const newRecipe = new recipeModel({
         name,
@@ -64,7 +67,7 @@ const updateRecipe = async (parent, {_id, name, picture, price, discount, ingred
 
     let priceAfterDiscount = 0;
     if(discount_status === 'ACTIVE') {
-        if(discount < 0 || discount > 100){
+        if(discount < 1 || discount > 100){
             throw new GraphQLError('Discount must be between 0 and 100', {
                 extensions: {
                     code: "recipe/discount-must-be-between-0-and-100",
@@ -75,6 +78,9 @@ const updateRecipe = async (parent, {_id, name, picture, price, discount, ingred
             priceAfterDiscount = price - (price * discount / 100);
             queryUpdate.price_after_discount = priceAfterDiscount;
         }
+    } else {
+        queryUpdate.discount = 0;
+        queryUpdate.price_after_discount = 0;
     }
     const result = await recipeModel.findByIdAndUpdate(_id, queryUpdate, {new: true});
     return result;
