@@ -94,7 +94,7 @@ const getAllCarts = async (parent, {page, limit}, context) => {
     //calculate total price
     for (data of getCarts){
         const recipe = await recipeModel.findById(data.recipe_id);
-        totalPrice += recipe.price * data.amount;
+        totalPrice += recipe.price_after_discount * data.amount;
     }
     
     if (page !== null) { 
