@@ -133,7 +133,11 @@ const getAllIngredients = async (parent, {filter}, context) => {
     try {
         const ingredients = await ingredientModel.aggregate(aggregate);
         const recipes = await recipeModel.aggregate([
-            {$match: {recipe_status: 'ACTIVE'}},
+            {$match:{$or: [
+                    { recipe_status: 'ACTIVE' },
+                    { recipe_status: 'UNPUBLISH' },
+                ]
+            }},
             {$project: {
                 _id: 1,
                 name: 1,
