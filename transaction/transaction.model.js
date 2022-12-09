@@ -7,7 +7,20 @@ const transactionSchema = new mongoose.Schema({
         {
             recipe_id: {type: mongoose.Schema.Types.ObjectId, ref: "recipes"},
             amount: Number,
-            note: String
+            note: String,
+            name: String,
+            picture: String,
+            price: Number,
+            discount: {
+                type: Number,
+                default: 0
+            },
+            price_after_discount: Number,
+            discount_status: {
+                type: String,
+                enum: ["ACTIVE", "INACTIVE"],
+                default: "ACTIVE"
+            },
         }
     ],
     total_price: Number,

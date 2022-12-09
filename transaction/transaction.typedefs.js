@@ -20,6 +20,12 @@ scalar Date
         recipe_id: Recipe
         amount: Int
         note: String
+        name: String
+        picture: String
+        price: Float
+        discount: Float
+        price_after_discount: Float
+        discount_status: DiscountStatus
     }
 
     enum OrderStatus{
@@ -28,6 +34,11 @@ scalar Date
     }
 
     enum TransactionStatus{
+        ACTIVE
+        DELETED
+    }
+
+    enum DiscountStatus{
         ACTIVE
         DELETED
     }
@@ -50,6 +61,12 @@ scalar Date
         recipe_id: ID!
         amount: Int!
         note: String
+        name: String
+        picture: String
+        price: Float
+        discount: Float
+        price_after_discount: Float
+        discount_status: DiscountStatus
     }
     
     type CreateTransaction{
