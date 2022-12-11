@@ -81,12 +81,15 @@ const createUser = async function (parent, {user_input}, context){
             }
         });
     } 
-    if(user && user.user_status === 'DELETED'){
-        const updateStatus = await UserModel.findOneAndUpdate({email: user_input.email}, {
-            user_status: 'ACTIVE'
-        }, {new: true});
-        return updateStatus;
+
+    if(user_input.password.length < 8){
+        throw new GraphQLError('Password must be at least 8 characters', {
+            extensions: {
+                code: "user/password-must-be-at-least-8-characters",
+            }
+        });
     }
+
     const hashed_password = await bcrypt.hash(user_input.password, 10);
     const newUser = new UserModel({
         first_name: user_input.first_name,
@@ -145,6 +148,14 @@ const forgotPassword = async (parent, {user_input}, context) => {
         throw new GraphQLError('Incorrect answer', {
             extensions: {
                 code: "user/incorrect-answer",
+            }
+        });
+    }
+
+    if(user_input.password.length < 8){
+        throw new GraphQLError('Password must be at least 8 characters', {
+            extensions: {
+                code: "user/password-must-be-at-least-8-characters",
             }
         });
     }
