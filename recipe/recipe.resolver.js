@@ -156,6 +156,15 @@ const updateOfferStatus = async (parent, {_id, offer_status}, context) => {
         });
     }
 
+    //if offer_status is "INACTIVE" then update offer_status to "INACTIVE"
+    if (offer_status === 'INACTIVE') {
+        const result = await recipeModel.findOneAndUpdate({_id: _id}, {
+            offer_status: offer_status
+        }, {new: true});
+        return result;
+    }
+
+    //if offer_status is "ACTIVE" then update offer_status to "ACTIVE"
     //count total recipe with offer_status "ACTIVE"
     let totalDataOffterStatusActive = 0;
     for (data of recipes){
