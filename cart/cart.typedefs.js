@@ -21,7 +21,7 @@ const typeDefs = gql`
         totalPrice : Float
     }
 
-    input MenuInput {
+    input CartMenuInput {
         recipe_id : ID!
         amount : Int!
         note : String
@@ -37,8 +37,8 @@ const typeDefs = gql`
     }
 
     type Mutation {
-        createCart(menu : MenuInput) : CreateReturn,
-        updateCart(menu : MenuInput) : Cart,
+        createCart(menu : CartMenuInput) : CreateReturn,
+        updateCart(menu : CartMenuInput) : Cart,
         deleteCart(_id : ID!) : Cart
     }
 `;
