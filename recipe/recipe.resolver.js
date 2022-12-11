@@ -173,15 +173,15 @@ const updateOfferStatus = async (parent, {_id, offer_status}, context) => {
         }
     }
 
-    if (totalDataOffterStatusActive < 3){
+    if (totalDataOffterStatusActive < 4){
         const result = await recipeModel.findOneAndUpdate({_id: _id}, {
             offer_status: offer_status
         }, {new: true});
         return result;
     } else {
-        throw new GraphQLError('Recipe offers cannot be more than 3', {
+        throw new GraphQLError('Recipe offers cannot be more than 4', {
             extensions: {
-                code: "recipe/recipe-offer-cannot-be-more-than-3",
+                code: "recipe/recipe-offer-cannot-be-more-than-4",
             }
         });
     }
