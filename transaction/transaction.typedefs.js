@@ -40,7 +40,7 @@ scalar Date
 
     enum DiscountStatus{
         ACTIVE
-        DELETED
+        INACTIVE
     }
 
     input TransactionInput{
