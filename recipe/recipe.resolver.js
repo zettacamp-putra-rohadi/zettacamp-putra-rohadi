@@ -234,7 +234,11 @@ const getAllRecipes = async (parent, {filter}, context) => {
     //check if not favorite page
     if (filter.is_favorite_page !== true) {    
         const calTotal = await recipeModel.aggregate(aggregate).count('total');
-        totalData = calTotal[0].total
+        if (calTotal.length > 0) {
+            totalData = calTotal[0].total
+        } else {
+            totalData = 0;
+        }
     }
     
     if (filter.page !== null) { 
@@ -313,6 +317,13 @@ const getAllRecipesPublic = async (parent, {filter}, context) => {
     aggregate.push({$sort: {created_at: -1}});
 
     const total = await recipeModel.aggregate(aggregate).count('total');
+    if (total.length == 0) {
+        throw new GraphQLError('Recipe not found', {
+            extensions: {
+                code: "recipe/recipe-not-found",
+            }
+        });
+    }
     
     if (filter.page !== null) { 
         aggregate.push({$skip: filter.page * filter.limit});
