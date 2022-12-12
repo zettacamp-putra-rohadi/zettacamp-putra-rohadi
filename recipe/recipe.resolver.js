@@ -82,7 +82,7 @@ const updateRecipe = async (parent, {_id, name, picture, price, discount, descri
         }
     } else {
         queryUpdate.discount = 0;
-        queryUpdate.price_after_discount = price - (price * discount / 100);
+        queryUpdate.price_after_discount = price;
     }
     const result = await recipeModel.findByIdAndUpdate(_id, queryUpdate, {new: true});
     return result;
